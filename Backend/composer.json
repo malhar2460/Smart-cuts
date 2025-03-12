@@ -1,0 +1,12 @@
+{
+    "name": "bhavya/smartcuts-api",
+    "description": "Salon Managment",
+    "autoload": {
+        "psr-4": {
+            "Bhavya\\SmartcutsApi\\": "src/"
+        }
+    },
+    "require": {
+        "firebase/php-jwt": "*"
+    }
+}
