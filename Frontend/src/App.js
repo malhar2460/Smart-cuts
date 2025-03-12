@@ -1,10 +1,15 @@
-import Form from "./Components/Form"
- 
+import { useState } from "react";
+import Login from "./Components/Login"
+import Signup from "./Components/Signup"
+
 function App() {
+  
+  let [isLogin,setisLogin] = useState(false)
+
   return (
     <div className="flex w-full h-screen">
       <div className="w-full flex justify-center items-center lg:w-1/2">
-        <Form />
+        {isLogin ? <Login /> : <Signup/>}
       </div>
       <div className="hidden lg:flex items-center justify-center h-full w-1/2 bg-[#111827]">
         <div className="grid grid-cols-1 justify-center items-center mx-10">
@@ -18,8 +23,8 @@ function App() {
                 make online payments.
                 Salon owners can manage staff schedules, track appointments,
                 and handle payments through an intuitive dashboard<br/><br/>
-                <button className="hover:scale-105 text-semibold border p-2 bg-violet-500 text-white rounded-xl  text-lg border-violet-500 px-10">Log in</button>
-                <button className="hover:scale-105 text-semibold border p-2 bg-violet-500 text-white rounded-xl  text-lg border-violet-500 ml-10 px-10">Sign up</button>
+                <button onClick={() => setisLogin(true)} className="hover:scale-105 text-semibold border p-2 bg-violet-500 text-white rounded-xl  text-lg border-violet-500 px-10">Log in</button>
+                <button onClick={() => setisLogin(false)} className="hover:scale-105 text-semibold border p-2 bg-violet-500 text-white rounded-xl  text-lg border-violet-500 ml-10 px-10">Sign up</button>
 
               </p>
               {/* <button className="mt-10 text-md px-2 py-2 border text-white border-violet-500">Log in</button> */}
