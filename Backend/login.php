@@ -1,55 +1,56 @@
 <?php
-require 'db_conn.php';  // Database connection
-require 'vendor/autoload.php';  // JWT package autoloader
+require 'db_conn.php'; 
+require 'vendor/autoload.php';  
 
 use Firebase\JWT\JWT;
-use Firebase\JWT\Key; // Needed for decoding in version 6.0+
+use Firebase\JWT\Key; 
 
-header('Content-Type: application/json'); // Set response to JSON format
+header("Content-Type: application/json");
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Methods: POST");
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Get the input from the request body (JSON)
+if ($_SERVER['REQUEST_METHOD'] === 'POST') 
+{
     $data = json_decode(file_get_contents('php://input'), true);
-
-    // Check if username and password are provided
     $username = isset($data['username']) ? $data['username'] : '';
     $password = isset($data['password']) ? $data['password'] : '';
 
-    if (empty($username) || empty($password)) {
+    if (empty($username)||empty($password)) 
+    {
         echo json_encode(["status" => "error", "message" => "Username and password are required."]);
         exit;
     }
 
-    // Prepare and execute SQL query to get user details by username
     $stmt = $conn->prepare("SELECT * FROM customer WHERE username = :username");
     $stmt->bindValue(':username', $username);
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // Verify if user exists and password matches
-    if ($user) {
-        if (password_verify($password, $user['password'])) {
-            // Generate JWT token
-            $key = "your_secret_key";  // Set your secret key
+    if ($user) 
+    {
+        if (password_verify($password, $user['password'])) 
+        {
+            $key = "your_secret_key"; 
             $payload = array(
                 "username" => $user['username'],
-                "exp" => time() + (60 * 60) // Token expiration time (1 hour)
+                "exp" => time() + (60 * 60) 
             );
-
-            $jwt = JWT::encode($payload, $key, 'HS256'); // Specify HS256 algorithm
-
-            // Return success response with token
+            $jwt = JWT::encode($payload, $key, 'HS256');   
             echo json_encode(["status" => "success", "token" => $jwt]);
-        } else {
-            // Incorrect password
+        } 
+        else 
+        { 
             echo json_encode(["status" => "error", "message" => "Incorrect username or password."]);
         }
-    } else {
-        // User does not exist
+    } 
+    else 
+    {
         echo json_encode(["status" => "error", "message" => "Incorrect username or password."]);
     }
-} else {
-    // If not POST method, return method not allowed error
+} 
+else 
+{
     echo json_encode(["status" => "error", "message" => "Method not allowed."]);
 }
 ?>
