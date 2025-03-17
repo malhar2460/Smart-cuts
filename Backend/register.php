@@ -1,5 +1,4 @@
 <?php
-
 include 'db_conn.php';
 
 header("Access-Control-Allow-Origin: http://localhost:3000");
@@ -9,7 +8,7 @@ header("Content-Type: application/json");
 
 $data = json_decode(file_get_contents("php://input"), true);
 
-if (empty($data['username']) || empty($data['email']) || empty($data['password']) || empty($data['phone_number'])) 
+if(empty($data['username']) || empty($data['email']) || empty($data['password']) || empty($data['phone_number'])) 
 {
     echo json_encode([
         'status' => 'error',
@@ -23,7 +22,8 @@ $email = $data['email'];
 $password = $data['password'];
 $phone_number = $data['phone_number'];
 
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) 
+{
     echo json_encode([
         'status' => 'error',
         'message' => 'Invalid email format.'
@@ -33,43 +33,51 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
 $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
-try {
+try 
+{
     $checkUserQuery = $conn->prepare("SELECT * FROM customer WHERE email = :email OR username = :username");
     $checkUserQuery->bindParam(':email', $email);
     $checkUserQuery->bindParam(':username', $username);
     $checkUserQuery->execute();
 
-    if ($checkUserQuery->rowCount() > 0) {
+    if ($checkUserQuery->rowCount() > 0) 
+    {
         echo json_encode([
             'status' => 'error',
             'message' => 'User with this username or email already exists.'
         ]);
-    } else {
+    } 
+    else 
+    {
         $insertQuery = $conn->prepare("INSERT INTO customer (username, email, password, phone_number) VALUES (:username, :email, :password, :phone_number)");
         $insertQuery->bindParam(':username', $username);
         $insertQuery->bindParam(':email', $email);
         $insertQuery->bindParam(':password', $hashedPassword);
         $insertQuery->bindParam(':phone_number', $phone_number);
 
-        if ($insertQuery->execute()) {
+        if ($insertQuery->execute()) 
+        {
             echo json_encode([
                 'status' => 'success',
                 'message' => 'User registered successfully.'
             ]);
-        } else {
+        } 
+        else 
+        {
             echo json_encode([
                 'status' => 'error',
                 'message' => 'Failed to register user.'
             ]);
         }
     }
-} catch (PDOException $e) {
+} 
+catch (PDOException $e) 
+{
     echo json_encode([
         'status' => 'error',
         'message' => 'Database error: ' . $e->getMessage()
     ]);
 }
-
 $conn = null;
 
 ?>
