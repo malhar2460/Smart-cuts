@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 12, 2025 at 08:08 AM
+-- Generation Time: Mar 31, 2025 at 04:20 PM
 -- Server version: 10.4.16-MariaDB
 -- PHP Version: 7.4.12
 
@@ -29,7 +29,6 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `admin` (
   `admin_id` int(11) NOT NULL,
-  `salon_name` varchar(150) NOT NULL,
   `username` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
   `email` varchar(150) NOT NULL,
@@ -52,7 +51,8 @@ CREATE TABLE `appointment` (
   `appointment_date` datetime NOT NULL,
   `status` enum('booked','completed','cancelled') NOT NULL,
   `payment_status` enum('pending','paid') NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `salon_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -75,7 +75,8 @@ CREATE TABLE `customer` (
 --
 
 INSERT INTO `customer` (`customer_id`, `username`, `password`, `email`, `phone_number`, `created_at`) VALUES
-(7, 'user1', '$2y$10$8TVP4k9U4P.jkTe78MrXfeDslvMH.MmuhVPrtbL0J3ScHe6OGZTsW', 'user@example.com', '9876543210', '2025-03-11 14:35:27');
+(7, 'user1', '$2y$10$8TVP4k9U4P.jkTe78MrXfeDslvMH.MmuhVPrtbL0J3ScHe6OGZTsW', 'user@example.com', '9876543210', '2025-03-11 14:35:27'),
+(11, 'user2', '$2y$10$cwslAqnBj9FdBdyrcAOid.zpoHu364yez4xj46m68Su/g260tR9bK', 'user2@gmail.com', '9876543210', '2025-03-17 14:54:18');
 
 -- --------------------------------------------------------
 
@@ -109,6 +110,21 @@ CREATE TABLE `review` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `salon`
+--
+
+CREATE TABLE `salon` (
+  `salon_id` int(11) NOT NULL,
+  `salon_name` varchar(150) NOT NULL,
+  `location` varchar(250) NOT NULL,
+  `contact` varchar(20) NOT NULL,
+  `admin_id` int(11) NOT NULL,
+  `description` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `services`
 --
 
@@ -118,7 +134,8 @@ CREATE TABLE `services` (
   `category` varchar(100) NOT NULL,
   `price` decimal(10,0) NOT NULL,
   `duration` int(11) NOT NULL,
-  `description` text NOT NULL
+  `description` text NOT NULL,
+  `salon_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -133,7 +150,8 @@ CREATE TABLE `staff` (
   `specialization` varchar(100) NOT NULL,
   `phone_number` varchar(15) NOT NULL,
   `email` varchar(150) NOT NULL,
-  `availability` enum('available','unavailable') NOT NULL
+  `availability` enum('available','unavailable') NOT NULL,
+  `salon_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -171,6 +189,12 @@ ALTER TABLE `review`
   ADD PRIMARY KEY (`review_id`);
 
 --
+-- Indexes for table `salon`
+--
+ALTER TABLE `salon`
+  ADD PRIMARY KEY (`salon_id`);
+
+--
 -- Indexes for table `services`
 --
 ALTER TABLE `services`
@@ -196,13 +220,13 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `appointment`
 --
 ALTER TABLE `appointment`
-  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `customer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `customer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `payment`
@@ -215,6 +239,12 @@ ALTER TABLE `payment`
 --
 ALTER TABLE `review`
   MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `salon`
+--
+ALTER TABLE `salon`
+  MODIFY `salon_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `services`

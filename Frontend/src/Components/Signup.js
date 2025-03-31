@@ -1,43 +1,67 @@
-import * as React from 'react'
+import * as React from 'react';
+import { useState } from 'react';
 
-export default function Signup()
-{
-    return(
+export default function Signup() {
+    const [formData, setFormData] = useState({
+        username: '',
+        email: '',
+        phone_number: '',
+        password: ''
+    });
+    const [message, setMessage] = useState('');
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await fetch("http://localhost/Backend/register.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formData)
+            });
+            const result = await response.json();
+            setMessage(result.message || 'Registration successful!');
+        } catch (error) {
+            setMessage("Registration failed. Please try again.");
+        }
+    };
+
+    return (
         <div>
             <div className="bg-white px-10 py-10 rounded-3xl">
                 <h1 className="text-5xl font-semibold">Welcome To Smart Cuts</h1>
-                <div className="mt-8">
+                <form onSubmit={handleSubmit} className="mt-8">
                     <div className='mt-3'>
                         <label>Username</label>
-                        <input
-                        placeholder="Enter your username"
-                        className="w-full border-2 mt-1 bg-transparent p-2 rounded-lg border-gray-200"></input>
+                        <input name="username" placeholder="Enter your username" className="w-full border-2 mt-1 bg-transparent p-2 rounded-lg border-gray-200" onChange={handleChange}></input>
                     </div>
                     <div className='mt-3'>
                         <label>Email</label>
-                        <input type="email"
-                        placeholder="Enter your email"
-                        className="w-full border-2 mt-1 bg-transparent p-2 rounded-lg border-gray-200"></input>
+                        <input type="email" name="email" placeholder="Enter your email" className="w-full border-2 mt-1 bg-transparent p-2 rounded-lg border-gray-200" onChange={handleChange}></input>
                     </div>
                     <div className='mt-3'>
-                        <label>Phone no</label>
-                        <input type="tel" required
-                        pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"
+                        <label>Phone Number</label>
+                        <input 
+                        name="phone_number" 
                         placeholder="Enter your phone number"
-                        className="w-full border-2 mt-1 bg-transparent p-2 rounded-lg border-gray-200"></input>
+                        type='tel'
+                        pattern='[6-9][0-9]{9}'
+                        maxLength="10"
+                        className="w-full border-2 mt-1 bg-transparent p-2 rounded-lg border-gray-200" onChange={handleChange}></input>
                     </div>
                     <div className='mt-3'>
                         <label>Password</label>
-                        <input type="password"
-                        placeholder="Enter your password"
-                        className="w-full border-2 mt-1 bg-transparent p-2 rounded-lg border-gray-200"></input>
+                        <input type="password" name="password" placeholder="Enter your password" className="w-full border-2 mt-1 bg-transparent p-2 rounded-lg border-gray-200" onChange={handleChange}></input>
                     </div>
-                    <div className="mt-10 flex flex-col">
-                        <button className="hover:scale-105  text-semibold border p-2 bg-violet-500 text-white rounded-xl w-full text-lg border-violet-500">Sign up</button>
-                    </div>
-                </div>
+                    <button type="submit" className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg">Sign Up</button>
+                </form>
+                {message && <p className="mt-3 text-red-500">{message}</p>}
             </div>
         </div>
-    )
+    );
 }
-
