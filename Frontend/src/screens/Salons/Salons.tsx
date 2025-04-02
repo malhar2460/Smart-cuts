@@ -14,6 +14,8 @@ import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
 import { Input } from "../../components/ui/input";
 import { Separator } from "../../components/ui/separator";
+import { useState,useEffect } from "react";
+import { Link } from "react-router-dom";
 
 export const Salons = (): JSX.Element => {
   // Data for service categories
@@ -32,41 +34,41 @@ export const Salons = (): JSX.Element => {
   ];
 
   // Data for salon cards
-  const salonCards = [
-    {
-      id: 1,
-      name: "Style & Grace Salon",
-      image: "..//img.png",
-      badge: "Featured",
-      rating: 4.5,
-      reviews: 128,
-      description:
-        "Luxury salon offering premium cuts, coloring, and styling services in a modern setting.",
-      stars: 4.5,
-    },
-    {
-      id: 2,
-      name: "Chic Cuts Studio",
-      image: "..//img-1.png",
-      badge: "Popular",
-      rating: 4,
-      reviews: 96,
-      description:
-        "Trendy salon specializing in modern cuts and creative coloring techniques.",
-      stars: 4,
-    },
-    {
-      id: 3,
-      name: "Elite Hair Lounge",
-      image: "..//img-2.png",
-      badge: "",
-      rating: 5,
-      reviews: 156,
-      description:
-        "Premium salon experience with expert stylists and luxury hair treatments.",
-      stars: 5,
-    },
-  ];
+  // const salonCards = [
+  //   {
+  //     id: 1,
+  //     name: "Style & Grace Salon",
+  //     image: "..//img.png",
+  //     badge: "Featured",
+  //     rating: 4.5,
+  //     reviews: 128,
+  //     description:
+  //       "Luxury salon offering premium cuts, coloring, and styling services in a modern setting.",
+  //     stars: 4.5,
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Chic Cuts Studio",
+  //     image: "..//img-1.png",
+  //     badge: "Popular",
+  //     rating: 4,
+  //     reviews: 96,
+  //     description:
+  //       "Trendy salon specializing in modern cuts and creative coloring techniques.",
+  //     stars: 4,
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Elite Hair Lounge",
+  //     image: "..//img-2.png",
+  //     badge: "",
+  //     rating: 5,
+  //     reviews: 156,
+  //     description:
+  //       "Premium salon experience with expert stylists and luxury hair treatments.",
+  //     stars: 5,
+  //   },
+  // ];
 
   // Data for footer links
   const companyLinks = [
@@ -119,6 +121,48 @@ export const Salons = (): JSX.Element => {
 
     return stars;
   };
+
+  const [salonCards, setSalonCards] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch salon data from the API
+  useEffect(() => {
+    fetch("http://localhost/Backend/display_salons.php")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      // Inside your useEffect's .then() block:
+      .then((data) => {
+        console.log("Fetched salon data:", data);
+        if (data && data.success && Array.isArray(data.services)) {
+          // Map API response to your component's expected structure
+          const mappedSalons = data.services.map((service: any) => ({
+            id: service.salon_id,
+            name: service.salon_name,
+            image: service.image,
+            badge: "", // Set badge if needed
+            description: service.description,
+            stars: 5, // You may adjust ratings as needed
+            reviews: 0, // You may adjust reviews as needed
+          }));
+          setSalonCards(mappedSalons);
+        } else {
+          console.error("Unexpected data format:", data);
+          setError("Unexpected data format");
+        }
+        setLoading(false);
+      })
+
+      .catch((err) => {
+        console.error("Failed to fetch salon data:", err);
+        setError("Failed to load salons.");
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen bg-white border-2 border-solid border-[#ced4da]">
@@ -209,46 +253,54 @@ export const Salons = (): JSX.Element => {
           </div>
         </div>
 
-        {/* Salon Cards */}
-        <div className="max-w-7xl mx-auto grid grid-cols-3 gap-6">
-          {salonCards.map((salon) => (
-            <Card
-              key={salon.id}
-              className="rounded-xl shadow-sm overflow-hidden"
-            >
-              <div
-                className="relative h-48 bg-cover bg-center"
-                style={{ backgroundImage: `url(${salon.image})` }}
+         {/* Salon Cards */}
+         <div className="max-w-7xl mx-auto grid grid-cols-3 gap-6">
+          {loading ? (
+            <p>Loading salons...</p>
+          ) : error ? (
+            <p className="text-red-500">{error}</p>
+          ) : salonCards.length > 0 ? (
+            salonCards.map((salon) => (
+              <Card
+                key={salon.id}
+                className="rounded-xl shadow-sm overflow-hidden"
               >
-                {salon.badge && (
-                  <div className="absolute top-4 right-4">
-                    <Badge className="bg-white text-black font-medium text-sm px-3 py-1 rounded-full">
-                      {salon.badge}
-                    </Badge>
-                  </div>
-                )}
-              </div>
-              <CardContent className="p-6">
-                <h3 className="font-['Inter',Helvetica] text-xl font-normal text-black mb-4">
-                  {salon.name}
-                </h3>
-                <div className="flex items-center mb-4">
-                  <div className="flex">{renderStars(salon.stars)}</div>
-                  <span className="ml-2 font-['Inter',Helvetica] text-gray-600 text-base">
-                    ({salon.reviews} reviews)
-                  </span>
+                <div
+                  className="relative h-48 bg-cover bg-center"
+                  style={{ backgroundImage: `url(${salon.image})` }}
+                >
+                  {salon.badge && (
+                    <div className="absolute top-4 right-4">
+                      <Badge className="bg-white text-black font-medium text-sm px-3 py-1 rounded-full">
+                        {salon.badge}
+                      </Badge>
+                    </div>
+                  )}
                 </div>
-                <p className="font-['Inter',Helvetica] text-gray-600 text-base mb-6">
-                  {salon.description}
-                </p>
-                <a href="service">
-                  <Button className="w-full bg-blue-600 text-white font-['Inter',Helvetica] text-base py-3.5">
-                    Book Appointment
-                  </Button>
-                </a>
-              </CardContent>
-            </Card>
-          ))}
+                <CardContent className="p-6">
+                  <h3 className="font-['Inter',Helvetica] text-xl font-normal text-black mb-4">
+                    {salon.name}
+                  </h3>
+                  <div className="flex items-center mb-4">
+                    <div className="flex">{renderStars(salon.stars)}</div>
+                    <span className="ml-2 font-['Inter',Helvetica] text-gray-600 text-base">
+                      ({salon.reviews} reviews)
+                    </span>
+                  </div>
+                  <p className="font-['Inter',Helvetica] text-gray-600 text-base mb-6">
+                    {salon.description}
+                  </p>
+                  <Link to={`/service?salon_id=${salon.id}`}>
+                    <Button className="w-full bg-blue-600 text-white font-['Inter',Helvetica] text-base py-3.5">
+                      Book Appointment
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <p>No salons found.</p>
+          )}
         </div>
       </main>
 

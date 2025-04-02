@@ -26,42 +26,57 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../../../components/ui/select";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import { useEffect, useState } from "react";
+
 
 export const ServicesSection = (): JSX.Element => {
   // Service data for mapping
-  const services = [
-    {
-      id: 1,
-      name: "Men's Classic Haircut",
-      description:
-        "Professional cut includes consultation, shampoo, and styling",
-      price: "$35.00",
-      duration: "45 min",
-      rating: "4.8",
-      reviews: "126",
-      image: "..//img.png",
-    },
-    {
-      id: 2,
-      name: "Full Color Treatment",
-      description: "Complete color service with premium products and styling",
-      price: "$120.00",
-      duration: "120 min",
-      rating: "4.9",
-      reviews: "84",
-      image: "..//img-1.png",
-    },
-    {
-      id: 3,
-      name: "Special Event Styling",
-      description: "Elegant styling for weddings, proms, and special occasions",
-      price: "$75.00",
-      duration: "60 min",
-      rating: "4.7",
-      reviews: "92",
-      image: "..//img-2.png",
-    },
-  ];
+  const { salon_id } = useParams(); 
+  const [services, setServices] = useState([]);
+
+  useEffect(() => {
+    if (salon_id) {
+      axios
+        .get(`http://localhost/Backend/display_services.php?salon_id=${salon_id}`)
+        .then((res) => setServices(res.data))
+        .catch((err) => console.error("Error fetching services:", err));
+    }
+  }, [salon_id]);
+  // const services = [
+  //   {
+  //     id: 1,
+  //     name: "Men's Classic Haircut",
+  //     description:
+  //       "Professional cut includes consultation, shampoo, and styling",
+  //     price: "$35.00",
+  //     duration: "45 min",
+  //     rating: "4.8",
+  //     reviews: "126",
+  //     image: "..//img.png",
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Full Color Treatment",
+  //     description: "Complete color service with premium products and styling",
+  //     price: "$120.00",
+  //     duration: "120 min",
+  //     rating: "4.9",
+  //     reviews: "84",
+  //     image: "..//img-1.png",
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Special Event Styling",
+  //     description: "Elegant styling for weddings, proms, and special occasions",
+  //     price: "$75.00",
+  //     duration: "60 min",
+  //     rating: "4.7",
+  //     reviews: "92",
+  //     image: "..//img-2.png",
+  //   },
+  // ];
 
   return (
     <div className="w-full">
@@ -350,22 +365,14 @@ export const ServicesSection = (): JSX.Element => {
                         </Badge>
                       </div>
                       <CardContent className="pt-4 pb-0">
-                        <CardTitle className="text-lg mb-2">
-                          {service.name}
-                        </CardTitle>
-                        <p className="text-sm text-gray-600 mb-6">
-                          {service.description}
-                        </p>
+                        <CardTitle className="text-lg mb-2">{service.name}</CardTitle>
+                        <p className="text-sm text-gray-600 mb-6">{service.description}</p>
                         <div className="flex justify-between items-center mb-4">
                           <span className="text-blue-600 font-semibold">
                             {service.price}
                           </span>
                           <div className="flex items-center">
-                            <img
-                              className="w-[18px] h-4"
-                              alt="Star"
-                              src="/frame-1.svg"
-                            />
+                            <img className="w-[18px] h-4" alt="Star" src="/frame-1.svg" />
                             <span className="ml-1">
                               {service.rating} ({service.reviews})
                             </span>
@@ -373,9 +380,7 @@ export const ServicesSection = (): JSX.Element => {
                         </div>
                       </CardContent>
                       <CardFooter className="pb-4">
-                        <Button className="w-full bg-blue-600 text-white">
-                          Book Now
-                        </Button>
+                        <Button className="w-full bg-blue-600 text-white">Book Now</Button>
                       </CardFooter>
                     </Card>
                   ))}
