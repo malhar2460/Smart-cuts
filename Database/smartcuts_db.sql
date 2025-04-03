@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 31, 2025 at 04:55 PM
+-- Generation Time: Apr 03, 2025 at 09:19 AM
 -- Server version: 10.4.16-MariaDB
 -- PHP Version: 7.4.12
 
@@ -35,6 +35,13 @@ CREATE TABLE `admin` (
   `phone_number` varchar(15) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `admin`
+--
+
+INSERT INTO `admin` (`admin_id`, `username`, `password`, `email`, `phone_number`, `created_at`) VALUES
+(1, 'Jayesh', '123', 'jayesh123@gmail.com', '9876543210', '2025-04-01 14:59:49');
 
 -- --------------------------------------------------------
 
@@ -81,6 +88,31 @@ INSERT INTO `customer` (`customer_id`, `username`, `password`, `email`, `phone_n
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `customer_queries`
+--
+
+CREATE TABLE `customer_queries` (
+  `submission_id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `subject` varchar(100) NOT NULL,
+  `message` text NOT NULL,
+  `submission_date` timestamp NOT NULL DEFAULT current_timestamp(),
+  `status` enum('pending','resolved') NOT NULL DEFAULT 'pending'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `customer_queries`
+--
+
+INSERT INTO `customer_queries` (`submission_id`, `name`, `email`, `subject`, `message`, `submission_date`, `status`) VALUES
+(1, 'bhavya', 'bhavay@gmail.com', 'ih', 'bye', '2025-03-31 17:40:11', 'pending'),
+(2, 'bhavya', 'bhavay@gmail.com', 'ih', 'bye', '2025-03-31 17:41:13', 'pending'),
+(3, 'bhavya', 'bhavay@gmail.com', 'ih', 'bye', '2025-03-31 17:41:39', 'pending');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `payment`
 --
 
@@ -104,7 +136,8 @@ CREATE TABLE `review` (
   `service_id` int(11) NOT NULL,
   `rating` int(11) NOT NULL,
   `review_text` text NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `salon_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -119,8 +152,17 @@ CREATE TABLE `salon` (
   `location` varchar(250) NOT NULL,
   `contact` varchar(20) NOT NULL,
   `admin_id` int(11) NOT NULL,
-  `description` text NOT NULL
+  `description` text NOT NULL,
+  `image` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `salon`
+--
+
+INSERT INTO `salon` (`salon_id`, `salon_name`, `location`, `contact`, `admin_id`, `description`, `image`) VALUES
+(1, 'BJM Salon', 'Surat', '9876543210', 1, 'Luxury salon offering premium cuts, coloring, and styling services in a modern setting.', '..//img.png'),
+(2, 'JBM Salon', 'Ahmedabad', '9978647546', 1, 'Baal kaat te hai', '..//img.png');
 
 -- --------------------------------------------------------
 
@@ -135,8 +177,16 @@ CREATE TABLE `services` (
   `price` decimal(10,0) NOT NULL,
   `duration` int(11) NOT NULL,
   `description` text NOT NULL,
-  `salon_id` int(11) NOT NULL
+  `salon_id` int(11) NOT NULL,
+  `image` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `services`
+--
+
+INSERT INTO `services` (`service_id`, `service_name`, `category`, `price`, `duration`, `description`, `salon_id`, `image`) VALUES
+(1, 'Hair wash', 'Hair care', '4000000', 10, 'Hair me shampoo dalenge', 1, '..//img.png');
 
 -- --------------------------------------------------------
 
@@ -177,6 +227,12 @@ ALTER TABLE `customer`
   ADD PRIMARY KEY (`customer_id`);
 
 --
+-- Indexes for table `customer_queries`
+--
+ALTER TABLE `customer_queries`
+  ADD PRIMARY KEY (`submission_id`);
+
+--
 -- Indexes for table `payment`
 --
 ALTER TABLE `payment`
@@ -214,7 +270,7 @@ ALTER TABLE `staff`
 -- AUTO_INCREMENT for table `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `appointment`
@@ -227,6 +283,12 @@ ALTER TABLE `appointment`
 --
 ALTER TABLE `customer`
   MODIFY `customer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- AUTO_INCREMENT for table `customer_queries`
+--
+ALTER TABLE `customer_queries`
+  MODIFY `submission_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `payment`
@@ -244,13 +306,13 @@ ALTER TABLE `review`
 -- AUTO_INCREMENT for table `salon`
 --
 ALTER TABLE `salon`
-  MODIFY `salon_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `salon_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `services`
 --
 ALTER TABLE `services`
-  MODIFY `service_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `service_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `staff`
