@@ -1,7 +1,7 @@
 import { CheckIcon } from "lucide-react";
 import React from "react";
-import { Button } from "../../../../components/ui/button";
-import { Card, CardContent } from "../../../../components/ui/card";
+import { Button } from "../../../../components/HomePage_ui/button";
+import { Card, CardContent } from "../../../../components/HomePage_ui/card";
 
 export const BusinessGrowthSection = (): JSX.Element => {
   // Feature list data

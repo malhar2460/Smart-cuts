@@ -1,32 +1,32 @@
 
 import React from "react";
-import { Badge } from "../../../../components/ui/badge";
+import { Badge } from "../../../../components/Services_ui/badge";
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbSeparator,
-} from "../../../../components/ui/breadcrumb";
-import { Button } from "../../../../components/ui/button";
+} from "../../../../components/Services_ui/breadcrumb";
+import { Button } from "../../../../components/Services_ui/button";
 import {
   Card,
   CardContent,
   CardFooter,
   CardTitle,
-} from "../../../../components/ui/card";
-import { Checkbox } from "../../../../components/ui/checkbox";
+} from "../../../../components/Services_ui/card";
+import { Checkbox } from "../../../../components/Services_ui/checkbox";
 import {
   RadioGroup,
   RadioGroupItem,
-} from "../../../../components/ui/radio-group";
+} from "../../../../components/Services_ui/radio-group";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../../../components/ui/select";
+} from "../../../../components/Services_ui/select";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -102,7 +102,7 @@ export const ServicesSection = (): JSX.Element => {
                       <img
                         className="w-[7.5px] h-3"
                         alt="Separator"
-                        src="/frame.svg"
+                        src="/frame-16.svg"
                       />
                     </BreadcrumbSeparator>
                     <BreadcrumbItem>
@@ -117,7 +117,7 @@ export const ServicesSection = (): JSX.Element => {
                       <img
                         className="w-[7.5px] h-3"
                         alt="Separator"
-                        src="/frame.svg"
+                        src="/frame-16.svg"
                       />
                     </BreadcrumbSeparator>
                     <BreadcrumbItem>
@@ -142,7 +142,7 @@ export const ServicesSection = (): JSX.Element => {
                         key={star}
                         className="w-[18px] h-4"
                         alt="Star"
-                        src="/frame-1.svg"
+                        src="/frame-6.svg"
                       />
                     ))}
                     <img
@@ -158,7 +158,7 @@ export const ServicesSection = (): JSX.Element => {
 
                 {/* Address */}
                 <div className="flex items-center">
-                  <img className="w-3 h-4" alt="Location" src="/frame-3.svg" />
+                  <img className="w-3 h-4" alt="Location" src="/frame-4.svg" />
                   <span className="ml-2 text-gray-600">
                     123 Main Street, Downtown, NY 10001
                   </span>
@@ -239,11 +239,11 @@ export const ServicesSection = (): JSX.Element => {
                     <div className="relative h-2 bg-neutral-200 rounded-full border-[0.5px] border-[#b7b5b5]">
                       <div className="h-2 bg-[#0075ff] rounded-full w-full">
                         <div className="w-[18px] h-[18px] absolute top-[-5px] right-0">
-                          <img
+                          {/* <img
                             className="w-[18px] h-[18px]"
                             alt="Slider handle"
                             src="/frame-4.svg"
-                          />
+                          /> */}
                         </div>
                       </div>
                     </div>
@@ -294,7 +294,7 @@ export const ServicesSection = (): JSX.Element => {
                               key={star}
                               className="w-[18px] h-4"
                               alt="Star"
-                              src="/frame-1.svg"
+                              src="/frame-6.svg"
                             />
                           ))}
                         </div>
@@ -311,7 +311,7 @@ export const ServicesSection = (): JSX.Element => {
                               key={star}
                               className="w-[18px] h-4"
                               alt="Star"
-                              src="/frame-1.svg"
+                              src="/frame-6.svg"
                             />
                           ))}
                           <img

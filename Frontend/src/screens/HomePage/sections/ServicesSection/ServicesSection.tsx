@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, CardContent } from "../../../../components/ui/card";
+import { Card, CardContent } from "../../../../components/HomePage_ui/card";
 
 export const ServicesSection = (): JSX.Element => {
   // Service card data for mapping

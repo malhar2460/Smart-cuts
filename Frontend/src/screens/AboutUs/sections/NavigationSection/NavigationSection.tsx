@@ -5,7 +5,7 @@ import {
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-} from "../../../../components/ui/navigation-menu";
+} from "../../../../components/AboutUs_ui/navigation-menu";
 
 export const NavigationSection = (): JSX.Element => {
   // Navigation links data

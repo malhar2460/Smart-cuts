@@ -5,8 +5,8 @@ import {
   YoutubeIcon,
 } from "lucide-react";
 import React from "react";
-import { Button } from "../../../../components/ui/button";
-import { Input } from "../../../../components/ui/input";
+import { Button } from "../../../../components/HomePage_ui/button";
+import { Input } from "../../../../components/HomePage_ui/input";
 
 export const FooterSection = (): JSX.Element => {
   // Company links data

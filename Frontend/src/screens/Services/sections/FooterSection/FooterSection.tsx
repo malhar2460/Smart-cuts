@@ -5,8 +5,8 @@ import {
   TwitterIcon,
 } from "lucide-react";
 import React from "react";
-import { Button } from "../../../../components/ui/button";
-import { Input } from "../../../../components/ui/input";
+import { Button } from "../../../../components/Services_ui/button";
+import { Input } from "../../../../components/Services_ui/input";
 
 export const FooterSection = (): JSX.Element => {
   // Social media links data

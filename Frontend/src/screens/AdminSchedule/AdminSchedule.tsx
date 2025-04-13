@@ -9,9 +9,9 @@ import {
   UsersIcon,
 } from "lucide-react";
 import React from "react";
-import { Avatar, AvatarImage } from "../../components/ui/avatar";
-import { Badge } from "../../components/ui/badge";
-import { Card, CardContent } from "../../components/ui/card";
+import { Avatar, AvatarImage } from "../../components/AdminSchedule_ui/avatar";
+import { Badge } from "../../components/AdminSchedule_ui/badge";
+import { Card, CardContent } from "../../components/AdminSchedule_ui/card";
 import {
   Table,
   TableBody,
@@ -19,8 +19,12 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../components/ui/table";
-import { ToggleGroup, ToggleGroupItem } from "../../components/ui/toggle-group";
+} from "../../components/AdminSchedule_ui/table";
+import { Link } from "react-router-dom";
+import { ToggleGroup, ToggleGroupItem } from "../../components/AdminSchedule_ui/toggle-group";
+
+import { Button } from "../../components/AdminDashboard_ui/button.tsx";
+
 
 export const AdminSchedule = (): JSX.Element => {
   // Data for statistics cards
@@ -96,30 +100,48 @@ export const AdminSchedule = (): JSX.Element => {
           </h1>
 
           <nav className="space-y-2">
-            <div className="flex items-center p-2 rounded-lg text-gray-700">
-              <LayoutDashboardIcon className="w-4 h-4 mr-3" />
-              <span className="text-base">Dashboard</span>
-            </div>
+          <Link to="/admindashboard">
+            <Button
+              variant="ghost"
+              className="w-full justify-start px-4 py-2.5 h-10 text-gray-700"
+            >
+              <img src="/frame-34.svg" alt="" className="w-4 h-4 mr-3" style={{ color: "#374151" }} />
+              Dashboard
+            </Button>
+            </Link>
+          <Link to="/adminstaff">
+            <Button
+              variant="ghost"
+              className="w-full justify-start px-4 py-2.5 h-10  text-grey-700"
+            >
+              <img src="/frame-33.svg" alt="" className="w-4 h-4 mr-3"></img>
+              Staff
+            </Button>
+          </Link>
 
-            <div className="flex items-center p-2 rounded-lg text-gray-700">
-              <UsersIcon className="w-5 h-4 mr-3" />
-              <span className="text-base">Staff</span>
-            </div>
+            <Button
+              variant="secondary"
+              className="w-full justify-start px-4 py-2.5 h-10 bg-indigo-50 text-indigo-600"
+            >
+              <img src="/frame-30.svg" alt="" className="w-4 h-4 mr-3"></img>
+              Schedule
+            </Button>
 
-            <div className="flex items-center p-2 rounded-lg bg-blue-50 text-blue-600">
-              <CalendarIcon className="w-3.5 h-4 mr-3" />
-              <span className="text-base">Schedule</span>
-            </div>
+            <Button
+              variant="ghost"
+              className="w-full justify-start px-4 py-2.5 h-10 text-gray-700"
+            >
+              <img src="/frame-32.svg" alt="" className="w-4 h-4 mr-3"></img>
+              Services
+            </Button>
 
-            <div className="flex items-center p-2 rounded-lg text-gray-700">
-              <ScissorsIcon className="w-4 h-4 mr-3" />
-              <span className="text-base">Services</span>
-            </div>
-
-            <div className="flex items-center p-2 rounded-lg text-gray-700">
-              <BarChart3Icon className="w-3.5 h-4 mr-3" />
-              <span className="text-base">Reports</span>
-            </div>
+            <Button
+              variant="ghost"
+              className="w-full justify-start px-4 py-2.5 h-10 text-gray-700"
+            >
+              <img src="/frame-9.svg" alt="" className="w-4 h-4 mr-3"></img>
+              Reports
+            </Button>
           </nav>
         </div>
       </aside>

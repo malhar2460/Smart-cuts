@@ -5,7 +5,7 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-} from "../../../../components/ui/card";
+} from "../../../../components/AboutUs_ui/card";
 
 export const MainContentSection = (): JSX.Element => {
   // Leadership team data

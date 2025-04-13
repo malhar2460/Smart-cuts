@@ -9,11 +9,11 @@ import {
   TwitterIcon,
 } from "lucide-react";
 import React from "react";
-import { Badge } from "../../components/ui/badge";
-import { Button } from "../../components/ui/button";
-import { Card, CardContent } from "../../components/ui/card";
-import { Input } from "../../components/ui/input";
-import { Separator } from "../../components/ui/separator";
+import { Badge } from "../../components/Salons_ui/badge";
+import { Button } from "../../components/Salons_ui/button";
+import { Card, CardContent } from "../../components/Salons_ui/card";
+import { Input } from "../../components/Salons_ui/input";
+import { Separator } from "../../components/Salons_ui/separator";
 import { useState,useEffect } from "react";
 import { Link } from "react-router-dom";
 

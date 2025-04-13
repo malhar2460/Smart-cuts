@@ -9,31 +9,32 @@ import {
   PlusIcon,
   ScissorsIcon,
   SearchIcon,
+  BellIcon
 } from "lucide-react";
 import React from "react";
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "../../components/ui/avatar";
-import { Badge } from "../../components/ui/badge";
-import { Button } from "../../components/ui/button";
+} from "../../components/AdminStaff_ui/avatar";
+import { Badge } from "../../components/AdminStaff_ui/badge";
+import { Button } from "../../components/AdminStaff_ui/button";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
-} from "../../components/ui/card";
-import { Input } from "../../components/ui/input";
+} from "../../components/AdminStaff_ui/card";
+import { Input } from "../../components/AdminStaff_ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../components/ui/select";
-import { ToggleGroup, ToggleGroupItem } from "../../components/ui/toggle-group";
-
+} from "../../components/AdminStaff_ui/select";
+import { ToggleGroup, ToggleGroupItem } from "../../components/AdminStaff_ui/toggle-group";
+import { Link } from "react-router-dom";
 export const AdminStaff = (): JSX.Element => {
   // Staff data for mapping
   const staffMembers = [
@@ -91,39 +92,39 @@ export const AdminStaff = (): JSX.Element => {
           </h1>
 
           <div className="mt-16 space-y-2">
+            <Link to="/admindashboard">
             <Button
               variant="ghost"
               className="w-full justify-start px-4 py-2.5 h-10 text-gray-700"
             >
-              <BarChart3Icon className="mr-3 h-4 w-4" />
+              <img src="/frame-34.svg" alt="" className="w-4 h-4 mr-3" style={{ color: "#374151" }} />
               Dashboard
             </Button>
+            </Link>
 
             <Button
-              variant="ghost"
+              variant="seconday"
               className="w-full justify-start px-4 py-2.5 h-10 bg-indigo-50 text-indigo-600"
             >
-              <svg
-                className="mr-3 h-4 w-5"
-                alt="Staff icon"
-                src="/frame-5.svg"
-              />
+              <img src="/frame-3.svg" alt="" className="w-4 h-4 mr-3"></img>
               Staff
             </Button>
 
+          <Link to="/adminschedule">
             <Button
               variant="ghost"
               className="w-full justify-start px-4 py-2.5 h-10 text-gray-700"
             >
-              <CalendarIcon className="mr-3 h-4 w-3.5" />
+              <img src="/frame-15.svg" alt="" className="w-4 h-4 mr-3"></img>
               Schedule
             </Button>
+          </Link>
 
             <Button
               variant="ghost"
               className="w-full justify-start px-4 py-2.5 h-10 text-gray-700"
             >
-              <ScissorsIcon className="mr-3 h-4 w-4" />
+              <img src="/frame-32.svg" alt="" className="w-4 h-4 mr-3"></img>
               Services
             </Button>
 
@@ -131,7 +132,7 @@ export const AdminStaff = (): JSX.Element => {
               variant="ghost"
               className="w-full justify-start px-4 py-2.5 h-10 text-gray-700"
             >
-              <FileTextIcon className="mr-3 h-4 w-3.5" />
+              <img src="/frame-9.svg" alt="" className="w-4 h-4 mr-3"></img>
               Reports
             </Button>
           </div>
@@ -154,13 +155,9 @@ export const AdminStaff = (): JSX.Element => {
           <div className="flex items-center">
             <div className="relative mr-4">
               <div className="flex items-center justify-center">
-                <img
-                  className="w-[17.5px] h-5"
-                  alt="Notifications"
-                  src="/frame.svg"
-                />
+              <BellIcon className="h-5 w-5 text-gray-600" />
               </div>
-              <div className="absolute -top-1 right-0 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
+              <div className="absolute left-2 -top-1 right-0 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
                 <span className="text-white text-xs">3</span>
               </div>
             </div>

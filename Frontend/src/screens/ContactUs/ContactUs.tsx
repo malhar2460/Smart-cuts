@@ -1,14 +1,14 @@
 import React from "react";
-import { Button } from "../../components/ui/button";
+import { Button } from "../../components/ContactUs_ui/button";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "../../components/ui/card";
-import { Input } from "../../components/ui/input";
-import { Separator } from "../../components/ui/separator";
-import { Textarea } from "../../components/ui/textarea";
+} from "../../components/ContactUs_ui/card";
+import { Input } from "../../components/ContactUs_ui/input";
+import { Separator } from "../../components/ContactUs_ui/separator";
+import { Textarea } from "../../components/ContactUs_ui/textarea";
 
 export const ContactUs = (): JSX.Element => {
   // Contact information data

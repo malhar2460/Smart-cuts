@@ -4,15 +4,16 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "../../components/ui/avatar";
-import { Badge } from "../../components/ui/badge";
-import { Button } from "../../components/ui/button";
+} from "../../components/AdminDashboard_ui/avatar.tsx";
+import { Badge } from "../../components/AdminDashboard_ui/badge.tsx";
+import { Button } from "../../components/AdminDashboard_ui/button.tsx";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "../../components/ui/card";
+} from "../../Components/AdminDashboard_ui/card.tsx";
+import { Link } from "react-router-dom";
 
 // Data for stats cards
 const statsCards = [
@@ -21,27 +22,27 @@ const statsCards = [
     value: "24",
     change: "12% from yesterday",
     positive: true,
-    icon: "/frame-12.svg",
+    icon: "/frame-30.svg",
   },
   {
     title: "Revenue Today",
     value: "$1,284",
     change: "8% from yesterday",
     positive: true,
-    icon: "/frame-8.svg",
+    icon: "/frame-31.svg",
   },
   {
     title: "New Customers",
     value: "12",
     change: "4% from yesterday",
     positive: true,
-    icon: "/frame-2.svg",
+    icon: "/frame-3.svg",
   },
   {
     title: "Average Rating",
     value: "4.8",
     subtitle: "Based on 156 reviews",
-    icon: "/frame-7.svg",
+    icon: "/frame-6.svg",
   },
 ];
 
@@ -89,11 +90,11 @@ const reviews = [
 
 // Navigation items
 const navItems = [
-  { name: "Dashboard", icon: "/frame-21.svg", active: true },
-  { name: "Staff", icon: "/frame-2.svg", active: false },
-  { name: "Schedule", icon: "/frame-15.svg", active: false },
-  { name: "Services", icon: "/frame-3.svg", active: false },
-  { name: "Reports", icon: "/frame-4.svg", active: false },
+  { name: "Dashboard", icon: "/frame-21.svg",path : "/admindashboard", active: true },
+  { name: "Staff", icon: "/frame-33.svg",path : "/adminstaff", active: false },
+  { name: "Schedule", icon: "/frame-15.svg",path : "/adminschedule", active: false },
+  { name: "Services", icon: "/frame-32.svg",path : "/", active: false },
+  { name: "Reports", icon: "/frame-9.svg",path : "/", active: false },
 ];
 
 export const AdminDashboard = (): JSX.Element => {
@@ -102,7 +103,7 @@ export const AdminDashboard = (): JSX.Element => {
       {/* Sidebar */}
       <aside className="w-64 h-full bg-white border-r">
         <div className="p-4">
-          <h1 className="font-bold text-indigo-600 text-2xl leading-6 font-['Inter']">
+          <h1 className="font-bold text-indigo-600 text-2xl leading-6 ">
             SmartCuts
           </h1>
 
@@ -110,13 +111,17 @@ export const AdminDashboard = (): JSX.Element => {
             <ul className="space-y-2">
               {navItems.map((item, index) => (
                 <li key={index}>
-                  <Button
-                    variant={item.active ? "secondary" : "ghost"}
-                    className={`w-full justify-start ${item.active ? "bg-blue-50 text-blue-600" : "text-gray-700"}`}
-                  >
-                    <img src={item.icon} alt="" className="w-4 h-4 mr-3" />
-                    {item.name}
-                  </Button>
+                  <Link to={item.path}>
+                    <Button
+                      variant={item.active ? "secondary" : "ghost"}
+                      className={`w-full justify-start ${
+                        item.active ? "bg-blue-50 text-blue-600" : "text-gray-700"
+                      }`}
+                    >
+                      <img src={item.icon} alt="" className="w-4 h-4 mr-3" />
+                      {item.name}
+                    </Button>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -141,7 +146,7 @@ export const AdminDashboard = (): JSX.Element => {
             <div className="flex items-center space-x-4">
               <div className="relative">
                 <BellIcon className="h-5 w-5 text-gray-600" />
-                <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-red-500">
+                <Badge className="absolute left-2 rounded-full font-normal -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-red-500">
                   <span className="text-xs">3</span>
                 </Badge>
               </div>
@@ -171,7 +176,7 @@ export const AdminDashboard = (): JSX.Element => {
                   {card.change && (
                     <p className="text-sm text-emerald-600 mt-4 flex items-center font-['Poppins']">
                       <img
-                        src="/frame-1.svg"
+                        src="/frame-29.svg"
                         alt=""
                         className="h-3.5 w-2.5 mr-1.5"
                       />
@@ -272,7 +277,7 @@ export const AdminDashboard = (): JSX.Element => {
                               key={i}
                               src={
                                 i < review.rating
-                                  ? "/frame-7.svg"
+                                  ? "/frame-6.svg"
                                   : "/frame-18.svg"
                               }
                               alt="star"
