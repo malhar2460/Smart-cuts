@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 03, 2025 at 09:19 AM
+-- Generation Time: Apr 13, 2025 at 01:57 PM
 -- Server version: 10.4.16-MariaDB
 -- PHP Version: 7.4.12
 
@@ -41,7 +41,7 @@ CREATE TABLE `admin` (
 --
 
 INSERT INTO `admin` (`admin_id`, `username`, `password`, `email`, `phone_number`, `created_at`) VALUES
-(1, 'Jayesh', '123', 'jayesh123@gmail.com', '9876543210', '2025-04-01 14:59:49');
+(3, 'admin123', '$2y$10$I8GyxDIb69xR0pcgDB704eVV1RTRtlf7tLodzJuIeH7LUBOnGe78i', 'admin@example.com', '9876543210', '2025-04-13 07:16:25');
 
 -- --------------------------------------------------------
 
@@ -61,6 +61,13 @@ CREATE TABLE `appointment` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `salon_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `appointment`
+--
+
+INSERT INTO `appointment` (`appointment_id`, `customer_id`, `admin_id`, `service_id`, `staff_id`, `appointment_date`, `status`, `payment_status`, `created_at`, `salon_id`) VALUES
+(6, 7, 3, 1, 1, '2025-04-14 16:47:29', 'booked', 'paid', '2025-04-13 11:18:22', 1);
 
 -- --------------------------------------------------------
 
@@ -162,7 +169,8 @@ CREATE TABLE `salon` (
 
 INSERT INTO `salon` (`salon_id`, `salon_name`, `location`, `contact`, `admin_id`, `description`, `image`) VALUES
 (1, 'BJM Salon', 'Surat', '9876543210', 1, 'Luxury salon offering premium cuts, coloring, and styling services in a modern setting.', '..//img.png'),
-(2, 'JBM Salon', 'Ahmedabad', '9978647546', 1, 'Baal kaat te hai', '..//img.png');
+(2, 'JBM Salon', 'Ahmedabad', '9978647546', 1, 'Baal kaat te hai', '..//img-1.png'),
+(3, 'Stylish Salon', '123 Main Street, Ahmedabad', '9876543210', 3, 'A premium salon for all grooming needs.', '..//img-2.png');
 
 -- --------------------------------------------------------
 
@@ -270,13 +278,13 @@ ALTER TABLE `staff`
 -- AUTO_INCREMENT for table `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `appointment`
 --
 ALTER TABLE `appointment`
-  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `customer`
@@ -306,7 +314,7 @@ ALTER TABLE `review`
 -- AUTO_INCREMENT for table `salon`
 --
 ALTER TABLE `salon`
-  MODIFY `salon_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `salon_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `services`
