@@ -34,7 +34,7 @@ try {
     $new_customers = $stmt->fetch(PDO::FETCH_ASSOC)['count'];
 
     $stmt = $conn->prepare("SELECT AVG(rating) as avg_rating, COUNT(*) as total_reviews FROM review");
-    $stmt->execute([$admin_id]);
+    $stmt->execute();
     $review_data = $stmt->fetch(PDO::FETCH_ASSOC);
 
     echo json_encode([

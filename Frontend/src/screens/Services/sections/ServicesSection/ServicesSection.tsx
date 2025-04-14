@@ -34,17 +34,32 @@ import { useEffect, useState } from "react";
 
 export const ServicesSection = (): JSX.Element => {
   // Service data for mapping
-  const { salon_id } = useParams(); 
+  // const { salon_id } = useParams(); 
   const [services, setServices] = useState([]);
 
-  useEffect(() => {
-    if (salon_id) {
-      axios
-        .get(`http://localhost/Backend/display_services.php?salon_id=${salon_id}`)
-        .then((res) => setServices(res.data))
-        .catch((err) => console.error("Error fetching services:", err));
-    }
-  }, [salon_id]);
+const queryParams = new URLSearchParams(window.location.search);
+const salon_id = queryParams.get("salon_id");
+
+useEffect(() => {
+  if (salon_id) {
+    axios
+      .get(`http://localhost/Backend/display_services.php?salon_id=${salon_id}`)
+      .then((res) => {
+        console.log("API Response:", res.data); // Log the full response to check structure
+        if (res.data?.success && Array.isArray(res.data.services)) {
+          setServices(res.data.services);
+        } else {
+          setServices([]);
+          console.error("API error or unexpected format:", res.data?.message);
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching services:", err);
+        setServices([]); // Ensure services is set to an empty array if an error occurs
+      });
+  }
+}, [salon_id]);
+
   // const services = [
   //   {
   //     id: 1,
@@ -352,7 +367,7 @@ export const ServicesSection = (): JSX.Element => {
                 {/* Service Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {services.map((service) => (
-                    <Card key={service.id} className="shadow-sm">
+                    <Card key={service.service_id} className="shadow-sm">
                       <div
                         className="relative h-48 rounded-t-lg"
                         style={{
@@ -362,20 +377,20 @@ export const ServicesSection = (): JSX.Element => {
                         }}
                       >
                         <Badge className="absolute top-4 right-4 bg-white text-black font-medium px-3 py-1 rounded-full">
-                          {service.duration}
+                          {service.duration} min
                         </Badge>
                       </div>
                       <CardContent className="pt-4 pb-0">
-                        <CardTitle className="text-lg mb-2">{service.name}</CardTitle>
+                        <CardTitle className="text-lg mb-2">{service.service_name}</CardTitle>
                         <p className="text-sm text-gray-600 mb-6">{service.description}</p>
                         <div className="flex justify-between items-center mb-4">
                           <span className="text-blue-600 font-semibold">
-                            {service.price}
+                            ₹{service.price}
                           </span>
                           <div className="flex items-center">
-                            <img className="w-[18px] h-4" alt="Star" src="/frame-1.svg" />
+                            <img className="w-[18px] h-4" alt="Star" src="/frame-6.svg" />
                             <span className="ml-1">
-                              {service.rating} ({service.reviews})
+                              {service.rating || "4.5"} ({service.reviews || "50"})
                             </span>
                           </div>
                         </div>
@@ -386,6 +401,7 @@ export const ServicesSection = (): JSX.Element => {
                     </Card>
                   ))}
                 </div>
+
               </div>
             </div>
           </div>
