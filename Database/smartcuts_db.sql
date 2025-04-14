@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 13, 2025 at 01:57 PM
+-- Generation Time: Apr 14, 2025 at 08:18 PM
 -- Server version: 10.4.16-MariaDB
 -- PHP Version: 7.4.12
 
@@ -41,7 +41,11 @@ CREATE TABLE `admin` (
 --
 
 INSERT INTO `admin` (`admin_id`, `username`, `password`, `email`, `phone_number`, `created_at`) VALUES
-(3, 'admin123', '$2y$10$I8GyxDIb69xR0pcgDB704eVV1RTRtlf7tLodzJuIeH7LUBOnGe78i', 'admin@example.com', '9876543210', '2025-04-13 07:16:25');
+(4, 'glowgo_admin', '$2y$10$2goSY7xfaAYbwGDno9b65OboJ/FShMH9Wrr2lUq4OAuKqTsNLMgHa', 'admin@glowgo.com', '9876543210', '2025-04-14 09:54:59'),
+(5, 'urban_admin', '$2y$10$ddFMMNIyJ0VJUmGO3W.iHODTQZI3x7fpALqLoC22AGJz.elpw3rYy', 'contact@urbanstyles.com', '9123456780', '2025-04-14 09:56:18'),
+(6, 'hairbar_admin', '$2y$10$7dKiTQ6G4D/hFrR97su5Ke8s204F.blLNO9XLY7wooz.keKeTvIi.', 'hello@thehairbar.com', '9988776655', '2025-04-14 09:56:32'),
+(7, 'bliss_admin', '$2y$10$HVeC2uqXXVC3LMkPmCSIluFI.L4yr1hKfQiQEbrsf.1QiruSfpnfe', 'support@blissbeauty.com', '9090909090', '2025-04-14 09:56:46'),
+(8, 'chiccuts_admin', '$2y$10$yCD0f70T9gIeqZSleO8ctO.jRoLPeWWne2.9lpMr77CGZluo12dy.', 'admin@chiccuts.com', '9345678901', '2025-04-14 09:56:55');
 
 -- --------------------------------------------------------
 
@@ -61,13 +65,6 @@ CREATE TABLE `appointment` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `salon_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `appointment`
---
-
-INSERT INTO `appointment` (`appointment_id`, `customer_id`, `admin_id`, `service_id`, `staff_id`, `appointment_date`, `status`, `payment_status`, `created_at`, `salon_id`) VALUES
-(6, 7, 3, 1, 1, '2025-04-14 16:47:29', 'booked', 'paid', '2025-04-13 11:18:22', 1);
 
 -- --------------------------------------------------------
 
@@ -89,8 +86,11 @@ CREATE TABLE `customer` (
 --
 
 INSERT INTO `customer` (`customer_id`, `username`, `password`, `email`, `phone_number`, `created_at`) VALUES
-(7, 'user1', '$2y$10$8TVP4k9U4P.jkTe78MrXfeDslvMH.MmuhVPrtbL0J3ScHe6OGZTsW', 'user@example.com', '9876543210', '2025-03-11 14:35:27'),
-(11, 'user2', '$2y$10$cwslAqnBj9FdBdyrcAOid.zpoHu364yez4xj46m68Su/g260tR9bK', 'user2@gmail.com', '9876543210', '2025-03-17 14:54:18');
+(14, 'anika_raj', '$2y$10$9ycZX9jNmrmulsHioUmXZ.KCt44PWqebDi/VGyjm2O3E97Y/Fhy9y', 'anika.raj@gmail.com', '9812345678', '2025-04-14 13:30:01'),
+(15, 'rohan_mehta', '$2y$10$ONeu4NsiOgBcuCM60FfBQu9aO4PSp6fsLrym2CPujxZMJG4kKiUIu', 'rohan.mehta@yahoo.com', '9876543212', '2025-04-14 13:30:15'),
+(16, 'meera_singh', '$2y$10$b5Xks5LRvBZHFusSqV3eZOBily.AvuYSEquo94ENPs7zb2qPR8Pnm', 'meera.singh@hotmail.com', '9988776655', '2025-04-14 13:30:24'),
+(17, 'vishal_kumar', '$2y$10$jCBcJR6obiQl.dzOMDEkU.wG9wsIhwVY0AXxolMbf88YceCyWBqZ6', 'vishal.kumar@gmail.com', '9765432188', '2025-04-14 13:30:35'),
+(18, 'sanya_jain', '$2y$10$eylLWOKsxnO26HiZnAbYj.a6HNgDFGpIH.aNTXjptCAAC2PEr6Mm.', 'sanya.jain@outlook.com', '9090901122', '2025-04-14 13:30:47');
 
 -- --------------------------------------------------------
 
@@ -107,15 +107,6 @@ CREATE TABLE `customer_queries` (
   `submission_date` timestamp NOT NULL DEFAULT current_timestamp(),
   `status` enum('pending','resolved') NOT NULL DEFAULT 'pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `customer_queries`
---
-
-INSERT INTO `customer_queries` (`submission_id`, `name`, `email`, `subject`, `message`, `submission_date`, `status`) VALUES
-(1, 'bhavya', 'bhavay@gmail.com', 'ih', 'bye', '2025-03-31 17:40:11', 'pending'),
-(2, 'bhavya', 'bhavay@gmail.com', 'ih', 'bye', '2025-03-31 17:41:13', 'pending'),
-(3, 'bhavya', 'bhavay@gmail.com', 'ih', 'bye', '2025-03-31 17:41:39', 'pending');
 
 -- --------------------------------------------------------
 
@@ -168,9 +159,11 @@ CREATE TABLE `salon` (
 --
 
 INSERT INTO `salon` (`salon_id`, `salon_name`, `location`, `contact`, `admin_id`, `description`, `image`) VALUES
-(1, 'BJM Salon', 'Surat', '9876543210', 1, 'Luxury salon offering premium cuts, coloring, and styling services in a modern setting.', '..//img.png'),
-(2, 'JBM Salon', 'Ahmedabad', '9978647546', 1, 'Baal kaat te hai', '..//img-1.png'),
-(3, 'Stylish Salon', '123 Main Street, Ahmedabad', '9876543210', 3, 'A premium salon for all grooming needs.', '..//img-2.png');
+(4, 'Glow & Go Salon', '12 MG Road, Andheri West, Mumbai', '022-23456789', 4, 'A modern salon offering premium hair, skin, and spa services.', '..//img.png'),
+(5, 'Urban Styles', '45 Residency Road, Indiranagar, Bangalore', '080-22334455', 5, 'Trendy urban salon with expert stylists and modern ambiance.', '..//img-1.png'),
+(6, 'The Hair Bar', 'Saket Mall, New Delhi', '011-44556677', 6, 'Professional hair styling, coloring, and grooming services.', '..//img-3.png'),
+(7, 'Bliss Beauty Lounge', 'Laxmi Road, Pune', '020-33445566', 7, 'Luxurious beauty treatments with organic and herbal products.', '..//img-2.png'),
+(8, 'Chic Cuts Studio', 'Bistupur Main Road, Jamshedpur', '0657-2223344', 8, 'Trendy salon with creative hairstyling and grooming solutions.', '..//img-1.png');
 
 -- --------------------------------------------------------
 
@@ -194,7 +187,20 @@ CREATE TABLE `services` (
 --
 
 INSERT INTO `services` (`service_id`, `service_name`, `category`, `price`, `duration`, `description`, `salon_id`, `image`) VALUES
-(1, 'Hair wash', 'Hair care', '4000000', 10, 'Hair me shampoo dalenge', 1, '..//img.png');
+(4, 'Classic Haircut', 'Hair', '350', 30, 'Personalized haircut with expert stylist.', 4, '..//haircut.jpg'),
+(5, 'Herbal Facial', 'Skin', '700', 45, 'Soothing facial using herbal products for glowing skin.', 4, '..//facial.jpeg'),
+(6, 'Manicure & Pedicure', 'Nails', '850', 60, 'Relaxing mani-pedi combo with massage.', 4, '..//manipedi.jpg'),
+(7, 'Beard Styling', 'Grooming', '300', 20, 'Professional beard trimming and shaping.', 5, '..//beard.jpeg'),
+(8, 'Hair Coloring', 'Hair', '1200', 90, 'Global or highlight hair coloring with branded products.', 5, '..//haircolor.jpg'),
+(9, 'Detan Face Pack', 'Skin', '450', 30, 'Instant glow with detan face treatment.', 5, '..//detan.jpeg'),
+(10, 'Hair Spa', 'Hair', '900', 60, 'Deep conditioning and scalp massage for hair health.', 6, '..//hairspa.jpg'),
+(11, 'Threading (Eyebrows)', 'Beauty', '60', 10, 'Precise eyebrow shaping with threading.', 6, '..//threading.jpg'),
+(12, 'Basic Cleanup', 'Skin', '500', 35, 'Quick face cleansing and massage.', 6, '..//cleanup.jpg'),
+(13, 'Bridal Makeup', 'Makeup', '6000', 120, 'Full bridal makeup with pre-wedding consultation.', 7, '..//bridal.jpg'),
+(14, 'Head Massage', 'Spa', '300', 20, 'Stress-relieving head massage with oils.', 7, '..//headmassage.jpg'),
+(15, 'Straightening', 'Hair', '2000', 120, 'Hair straightening using L’Oreal and Schwarzkopf.', 8, '..//straightening.jpg'),
+(16, 'Body Wax', 'Beauty', '1500', 90, 'Complete waxing package using aloe-vera wax.', 8, '..//waxing.jpeg'),
+(17, 'O3+ Whitening Facial', 'Skin', '1100', 60, 'Skin brightening facial using O3+ products.', 8, '..//O3.jpg');
 
 -- --------------------------------------------------------
 
@@ -209,8 +215,25 @@ CREATE TABLE `staff` (
   `phone_number` varchar(15) NOT NULL,
   `email` varchar(150) NOT NULL,
   `availability` enum('available','unavailable') NOT NULL,
-  `salon_id` int(11) NOT NULL
+  `salon_id` int(11) NOT NULL,
+  `image` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `staff`
+--
+
+INSERT INTO `staff` (`staff_id`, `staff_name`, `specialization`, `phone_number`, `email`, `availability`, `salon_id`, `image`) VALUES
+(4, 'Ravi Kumar', 'Hair Stylist', '9876543210', 'ravi.kumar@salon.com', 'available', 4, '..//ravi_kumar.jpeg'),
+(5, 'Priya Sharma', 'Facial Specialist', '9876543211', 'priya.sharma@salon.com', 'available', 4, '..//priya_sharma.jpg'),
+(6, 'Anjali Verma', 'Hair Stylist', '9876543212', 'anjali.verma@salon.com', 'available', 5, '..//anjali_verma.jpg'),
+(7, 'Vikram Yadav', 'Beard Stylist', '9876543213', 'vikram.yadav@salon.com', 'available', 5, '..//vikram_yadav.jpg'),
+(8, 'Nisha Reddy', 'Nail Technician', '9876543214', 'nisha.reddy@salon.com', 'available', 6, '..//nisha_reddy.jpg'),
+(9, 'Deepika Iyer', 'Hair Specialist', '9876543215', 'deepika.iyer@salon.com', 'available', 6, '..//deepika_iyer.jpg'),
+(10, 'Meera Patel', 'Makeup Artist', '9876543216', 'meera.patel@salon.com', 'available', 7, '..//meera_patel.jpg'),
+(11, 'Rajesh Gupta', 'Hair Stylist', '9876543217', 'rajesh.gupta@salon.com', 'available', 7, '..//rajesh_gupta.jpg'),
+(12, 'Neha Singh', 'Hair Stylist', '9876543218', 'neha.singh@salon.com', 'available', 8, '..//neha_singh.jpg'),
+(13, 'Karan Mehta', 'Facial Specialist', '9876543219', 'karan.mehta@salon.com', 'available', 8, '..//karan_mehta.jpeg');
 
 --
 -- Indexes for dumped tables
@@ -278,7 +301,7 @@ ALTER TABLE `staff`
 -- AUTO_INCREMENT for table `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `appointment`
@@ -290,7 +313,7 @@ ALTER TABLE `appointment`
 -- AUTO_INCREMENT for table `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `customer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `customer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `customer_queries`
@@ -314,19 +337,19 @@ ALTER TABLE `review`
 -- AUTO_INCREMENT for table `salon`
 --
 ALTER TABLE `salon`
-  MODIFY `salon_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `salon_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `services`
 --
 ALTER TABLE `services`
-  MODIFY `service_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `service_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `staff`
 --
 ALTER TABLE `staff`
-  MODIFY `staff_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `staff_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

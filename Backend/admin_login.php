@@ -1,4 +1,7 @@
 <?php
+
+session_start(); 
+
 require 'db_conn.php'; 
 require 'vendor/autoload.php';  
 
@@ -40,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
             );
 
             $jwt = JWT::encode($payload, $key, 'HS256'); 
-            
+            $_SESSION['admin_id'] = $user['admin_id'];
             echo json_encode(["status" => "success", "token" => $jwt]);
         } 
         else 

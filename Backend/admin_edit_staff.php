@@ -15,6 +15,7 @@ if (
     isset($_POST['email']) &&
     isset($_POST['availability'])
 ) {
+
     $staff_id = intval($_POST['staff_id']);
     $staff_name = $_POST['staff_name'];
     $specialization = $_POST['specialization'];
@@ -23,6 +24,7 @@ if (
     $availability = $_POST['availability'];
 
     try {
+  
         if (isset($_FILES['image'])) {
             $image = $_FILES['image'];
             $image_name = time() . "_" . basename($image["name"]);
@@ -35,6 +37,7 @@ if (
             $upload_path = $upload_dir . $image_name;
 
             if (move_uploaded_file($image["tmp_name"], $upload_path)) {
+
                 $stmt = $conn->prepare("UPDATE staff 
                     SET staff_name = ?, specialization = ?, phone_number = ?, email = ?, availability = ?, image = ? 
                     WHERE staff_id = ?");
@@ -44,6 +47,7 @@ if (
                 exit;
             }
         } else {
+
             $stmt = $conn->prepare("UPDATE staff 
                 SET staff_name = ?, specialization = ?, phone_number = ?, email = ?, availability = ? 
                 WHERE staff_id = ?");
@@ -55,17 +59,20 @@ if (
             "message" => "Staff updated successfully"
         ];
     } catch (PDOException $e) {
+       
         $response = [
             "status" => false,
             "message" => "Database error: " . $e->getMessage()
         ];
     }
 } else {
+
     $response = [
         "status" => false,
         "message" => "Missing required fields"
     ];
 }
+
 
 header("Content-Type: application/json");
 echo json_encode($response);

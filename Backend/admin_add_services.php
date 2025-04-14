@@ -1,61 +1,50 @@
 <?php
+session_start();
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Access-Control-Allow-Methods: POST");
+header("Content-Type: application/json");
 
 include 'db_conn.php';
 
-$response = [];
+$data = json_decode(file_get_contents("php://input"));
 
 if (
-    isset($_POST['service_name']) &&
-    isset($_POST['category']) &&
-    isset($_POST['price']) &&
-    isset($_POST['duration']) &&
-    isset($_POST['description']) &&
-    isset($_POST['salon_id']) &&
-    isset($_FILES['image'])
+    !empty($data->service_name) && !empty($data->category) &&
+    !empty($data->price) && !empty($data->duration) &&
+    !empty($data->description) &&
+    !empty($data->image) 
 ) {
-    $service_name = $_POST['service_name'];
-    $category = $_POST['category'];
-    $price = floatval($_POST['price']);
-    $duration = $_POST['duration'];
-    $description = $_POST['description'];
-    $salon_id = intval($_POST['salon_id']);
+    $service_name = $data->service_name;
+    $category = $data->category;
+    $price = floatval($data->price);
+    $duration = $data->duration;
+    $description = $data->description;
+    $admin_id = $_SESSION['admin_id'];
+    $image = $data->image;
 
-    $image = $_FILES['image'];
-    $image_name = time() . "_" . basename($image["name"]);
-    $upload_dir = "uploads/services/";
+    $stmt1 = $conn->prepare("SELECT salon_id FROM salon WHERE admin_id = ?");
+    $stmt1->execute([$admin_id]);
+    $salon = $stmt1->fetch(PDO::FETCH_ASSOC);
 
-    if (!is_dir($upload_dir)) {
-        mkdir($upload_dir, 0777, true);
-    }
+    $salon_id = $salon['salon_id'];
 
-    $upload_path = $upload_dir . $image_name;
+    try {
+        $stmt = $conn->prepare("INSERT INTO services (service_name, category, price, duration, description, image, salon_id) 
+                                VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$service_name, $category, $price, $duration, $description, $image, $salon_id]);
 
-    if (move_uploaded_file($image["tmp_name"], $upload_path)) {
-        try {
-            $stmt = $conn->prepare("INSERT INTO services (service_name, category, price, duration, description, image, salon_id) 
-                                    VALUES (?, ?, ?, ?, ?, ?, ?)");
-            $stmt->execute([$service_name, $category, $price, $duration, $description, $image_name, $salon_id]);
-
-            $response = [
-                "status" => true,
-                "message" => "Service added successfully with image",
-                "image_url" => $upload_path
-            ];
-        } catch (PDOException $e) {
-            $response = [
-                "status" => false,
-                "message" => "Database error: " . $e->getMessage()
-            ];
-        }
-    } else {
+        $response = [
+            "status" => true,
+            "message" => "Service added successfully ",
+        ];
+    } catch (PDOException $e) {
         $response = [
             "status" => false,
-            "message" => "Failed to upload image"
+            "message" => "Database error: " . $e->getMessage()
         ];
     }
+
 } else {
     $response = [
         "status" => false,
@@ -63,6 +52,4 @@ if (
     ];
 }
 
-header("Content-Type: application/json");
-echo json_encode($response);
 ?>

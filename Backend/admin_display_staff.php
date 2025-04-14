@@ -1,4 +1,7 @@
 <?php
+
+session_start(); 
+
 header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type");
@@ -6,15 +9,15 @@ header("Access-Control-Allow-Methods: *");
 
 include 'db_conn.php';
 
-$salon_id = isset($_GET['salon_id']) ? intval($_GET['salon_id']) : 0;
-
-if ($salon_id == 0) {
-    echo json_encode(["status" => false, "message" => "Salon ID is required"]);
+if (!isset($_SESSION['admin_id']) || !isset($_SESSION['salon_id'])) {
+    echo json_encode(["status" => false, "message" => "Admin is not logged in or salon ID is not found in session."]);
     exit;
 }
 
+$salon_id = $_SESSION['salon_id'];
+
 try {
-    $stmt = $conn->prepare("SELECT staff_id, staff_name, specialization, phone_number, email, availability 
+    $stmt = $conn->prepare("SELECT staff_id, staff_name, specialization, phone_number, email, availability,image 
                             FROM staff 
                             WHERE salon_id = ?");
     $stmt->execute([$salon_id]);
