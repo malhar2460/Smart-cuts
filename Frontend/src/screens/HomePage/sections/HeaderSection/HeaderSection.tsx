@@ -36,7 +36,7 @@ export const HeaderSection = (): JSX.Element => {
             </nav>
 
             {/* Sign In Button */}
-            <a>
+            <a href="/login">
               <Button className="bg-indigo-600 text-white rounded-full h-10 px-6 font-['Poppins',Helvetica] font-normal text-base">
                 Sign In
               </Button>

@@ -10,6 +10,7 @@ import { AdminDashboard } from "./screens/AdminDashboard/AdminDashboard"; // Exa
 import { AdminStaff } from "./screens/AdminStaff/AdminStaff"; // Example new page
 import { AdminSchedule } from "./screens/AdminSchedule/AdminSchedule"; // Example new page
 import { AppointmentDetails } from "./screens/AdminSchedule/AppointmentDetails"; // Example new page
+import { LogIn } from "./screens/LogIn/LogIn"; // Example new page
 
 createRoot(document.getElementById("app") as HTMLElement).render(
   <StrictMode>
@@ -25,6 +26,7 @@ createRoot(document.getElementById("app") as HTMLElement).render(
         <Route path="/adminschedule" element={<AdminSchedule />} />
         <Route path="/adminschedule/appointment/:appointmentId" element={<AppointmentDetails />} />
         <Route path="/adminstaff" element={<AdminStaff />} />
+        <Route path="/login" element={<LogIn />} />
       </Routes>
     </Router>
   </StrictMode>
