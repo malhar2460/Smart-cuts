@@ -9,6 +9,8 @@ import {
 import { Input } from "../../components/ContactUs_ui/input";
 import { Separator } from "../../components/ContactUs_ui/separator";
 import { Textarea } from "../../components/ContactUs_ui/textarea";
+import { FooterSection } from "../HomePage/sections/FooterSection/FooterSection";
+import { HeaderSection } from "../HomePage/sections/HeaderSection";
 
 export const ContactUs = (): JSX.Element => {
   // Contact information data
@@ -16,17 +18,17 @@ export const ContactUs = (): JSX.Element => {
     {
       icon: "/frame-4.svg",
       title: "Address",
-      content: "123 Business Street, Suite 100 New York, NY 10001",
+      content: "DAIICT-campus, near, Reliance Cross Rd, Gandhinagar, Gujarat 382007",
     },
     {
       icon: "/frame-6.svg",
       title: "Phone",
-      content: "+1 (555) 123-4567",
+      content: "079 6826 1700",
     },
     {
       icon: "/frame.svg",
       title: "Email",
-      content: "contact@smartcuts.com",
+      content: "info@daiict.ac.in",
     },
   ];
 
@@ -59,7 +61,7 @@ export const ContactUs = (): JSX.Element => {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="w-full bg-white border-b">
+      {/* <header className="w-full bg-white border-b">
         <div className="container flex justify-between items-center h-[87px] px-4">
           <a href="/" className="font-bold text-indigo-600 text-2xl">SmartCuts</a>
           <nav className="flex items-center gap-6">
@@ -77,8 +79,8 @@ export const ContactUs = (): JSX.Element => {
             </Button>
           </nav>
         </div>
-      </header>
-
+      </header> */}
+      <HeaderSection/>
       {/* Main Content */}
       <main className="container py-8 px-4 flex-1">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
@@ -201,82 +203,7 @@ export const ContactUs = (): JSX.Element => {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white">
-        <div className="container px-4 py-20">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Company Info */}
-            <div className="space-y-6">
-              <h2 className="font-bold text-2xl text-white">SmartCuts</h2>
-              <p className="text-gray-400">
-                Making salon management smarter and more efficient.
-              </p>
-              <div className="flex space-x-4">
-                {socialIcons.map((icon, index) => (
-                  <a
-                    key={index}
-                    href="#"
-                    className="flex items-center justify-center"
-                  >
-                    <img src={icon} alt="Social media" className="w-5 h-5" />
-                  </a>
-                ))}
-              </div>
-            </div>
-
-            {/* Company Links */}
-            <div>
-              <h3 className="font-bold text-base mb-6">Company</h3>
-              <ul className="space-y-4">
-                {companyLinks.map((link, index) => (
-                  <li key={index}>
-                    <a href="#" className="text-gray-300 hover:text-white">
-                      {link}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Support Links */}
-            <div>
-              <h3 className="font-bold text-base mb-6">Support</h3>
-              <ul className="space-y-4">
-                {supportLinks.map((link, index) => (
-                  <li key={index}>
-                    <a href="#" className="text-gray-300 hover:text-white">
-                      {link}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Subscribe */}
-            <div>
-              <h3 className="font-bold text-base mb-6">Subscribe</h3>
-              <p className="text-gray-400 mb-6">
-                Get the latest news and updates
-              </p>
-              <div className="flex">
-                <Input
-                  placeholder="Enter your email"
-                  className="bg-gray-800 border-0 rounded-r-none text-gray-400 h-10"
-                />
-                <Button className="bg-indigo-600 hover:bg-indigo-700 rounded-l-none h-10">
-                  Subscribe
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          <Separator className="my-8 bg-gray-800" />
-
-          <div className="text-center text-gray-400">
-            © 2025 SmartCuts. All rights reserved.
-          </div>
-        </div>
-      </footer>
+      <FooterSection/>
     </div>
   );
 };

@@ -1,43 +1,59 @@
 <?php
-
-session_start(); 
+// admin_display_staff.php
 
 header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type");
-header("Access-Control-Allow-Methods: *");
+header("Access-Control-Allow-Methods: GET,OPTIONS");
 
-include 'db_conn.php';
+require_once __DIR__ . '/db_conn.php';
 
-if (!isset($_SESSION['admin_id']) || !isset($_SESSION['salon_id'])) {
-    echo json_encode(["status" => false, "message" => "Admin is not logged in or salon ID is not found in session."]);
+// Allow preflight requests
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
     exit;
 }
 
-$salon_id = $_SESSION['salon_id'];
+// 1) Read salon_id from GET
+$salon_id = isset($_GET['salon_id']) ? intval($_GET['salon_id']) : 0;
+if ($salon_id <= 0) {
+    echo json_encode([
+        "status"  => false,
+        "message" => "Missing or invalid salon_id parameter."
+    ]);
+    exit;
+}
 
 try {
-    $stmt = $conn->prepare("SELECT staff_id, staff_name, specialization, phone_number, email, availability,image 
-                            FROM staff 
-                            WHERE salon_id = ?");
-    $stmt->execute([$salon_id]);
+    // 2) Fetch all staff for this salon_id
+    $stmt = $conn->prepare(
+        "SELECT staff_id,
+                staff_name,
+                specialization,
+                phone_number,
+                email,
+                availability,
+                image
+         FROM staff
+         WHERE salon_id = :sid"
+    );
+    $stmt->execute([':sid' => $salon_id]);
     $staffList = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    if ($staffList) {
+    if (count($staffList) > 0) {
         echo json_encode([
             "status" => true,
-            "data" => $staffList
+            "data"   => $staffList
         ]);
     } else {
         echo json_encode([
-            "status" => false,
-            "message" => "No staff found for this salon."
+            "status"  => false,
+            "message" => "No staff found for salon_id {$salon_id}."
         ]);
     }
 } catch (PDOException $e) {
     echo json_encode([
-        "status" => false,
+        "status"  => false,
         "message" => "Database error: " . $e->getMessage()
     ]);
 }
-?>

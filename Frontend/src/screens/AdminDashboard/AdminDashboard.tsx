@@ -16,6 +16,7 @@ import {
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { HeaderSection } from "./sections/HeaderSection/HeaderSection.tsx";
 
 const navItems = [
   { name: "Dashboard", icon: "/frame-21.svg", path: "/admindashboard", active: true },
@@ -27,7 +28,7 @@ const navItems = [
 
 export const AdminDashboard = (): JSX.Element => {
   const queryParams = new URLSearchParams(window.location.search);
-  const admin_id = queryParams.get("admin_id");
+  const admin_id = localStorage.getItem('admin_id');
 
   const [appointments, setAppointments] = useState([]);
   const [reviews, setReviews] = useState([]);
@@ -166,7 +167,7 @@ export const AdminDashboard = (): JSX.Element => {
   return (
     <div className="flex h-[769px] bg-white border-2 border-solid border-[#ced4da] overflow-hidden">
       {/* Sidebar */}
-      <aside className="w-64 h-full bg-white border-r">
+      {/* <aside className="relative w-64 h-full bg-white border-r">
         <div className="p-4">
           <h1 className="font-bold text-indigo-600 text-2xl leading-6">
             SmartCuts
@@ -178,9 +179,8 @@ export const AdminDashboard = (): JSX.Element => {
                   <Link to={item.path}>
                     <Button
                       variant={item.active ? "secondary" : "ghost"}
-                      className={`w-full justify-start ${
-                        item.active ? "bg-blue-50 text-blue-600" : "text-gray-700"
-                      }`}
+                      className={`w-full justify-start ${item.active ? "bg-blue-50 text-blue-600" : "text-gray-700"
+                        }`}
                     >
                       <img src={item.icon} alt="" className="w-4 h-4 mr-3" />
                       {item.name}
@@ -191,7 +191,21 @@ export const AdminDashboard = (): JSX.Element => {
             </ul>
           </nav>
         </div>
-      </aside>
+
+        <div className="absolute bottom-14 left-0 w-full px-4">
+          <Link to={`/adminprofile?admin_id=${admin_id}`}>
+            <Button variant="ghost" className="w-full justify-start text-gray-700">
+              <img
+                src={`http://localhost/Backend/${JSON.parse(localStorage.getItem('user') || '{}').photoUrl || 'default-profile.png'}`}
+                alt="Profile"
+                className="w-6 h-6 rounded-full mr-3 object-cover"
+              />
+              Profile
+            </Button>
+          </Link>
+        </div>
+      </aside> */}
+      <HeaderSection/>
 
       {/* Main content */}
       <main className="flex-1 bg-gray-50">
@@ -207,16 +221,16 @@ export const AdminDashboard = (): JSX.Element => {
               </p>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="relative">
+              {/* <div className="relative">
                 <BellIcon className="h-5 w-5 text-gray-600" />
                 <Badge className="absolute left-2 rounded-full font-normal -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-red-500">
                   <span className="text-xs">3</span>
                 </Badge>
-              </div>
-              <Avatar className="h-10 w-10">
+              </div> */}
+              {/* <Avatar className="h-10 w-10">
                 <AvatarImage src="..//img.png" alt="User" />
                 <AvatarFallback>S</AvatarFallback>
-              </Avatar>
+              </Avatar> */}
             </div>
           </header>
 

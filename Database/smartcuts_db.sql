@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.4
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 14, 2025 at 08:18 PM
--- Server version: 10.4.16-MariaDB
--- PHP Version: 7.4.12
+-- Generation Time: Apr 18, 2025 at 08:03 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -33,19 +33,20 @@ CREATE TABLE `admin` (
   `password` varchar(255) NOT NULL,
   `email` varchar(150) NOT NULL,
   `phone_number` varchar(15) NOT NULL,
+  `photo` longblob NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `admin`
 --
 
-INSERT INTO `admin` (`admin_id`, `username`, `password`, `email`, `phone_number`, `created_at`) VALUES
-(4, 'glowgo_admin', '$2y$10$2goSY7xfaAYbwGDno9b65OboJ/FShMH9Wrr2lUq4OAuKqTsNLMgHa', 'admin@glowgo.com', '9876543210', '2025-04-14 09:54:59'),
-(5, 'urban_admin', '$2y$10$ddFMMNIyJ0VJUmGO3W.iHODTQZI3x7fpALqLoC22AGJz.elpw3rYy', 'contact@urbanstyles.com', '9123456780', '2025-04-14 09:56:18'),
-(6, 'hairbar_admin', '$2y$10$7dKiTQ6G4D/hFrR97su5Ke8s204F.blLNO9XLY7wooz.keKeTvIi.', 'hello@thehairbar.com', '9988776655', '2025-04-14 09:56:32'),
-(7, 'bliss_admin', '$2y$10$HVeC2uqXXVC3LMkPmCSIluFI.L4yr1hKfQiQEbrsf.1QiruSfpnfe', 'support@blissbeauty.com', '9090909090', '2025-04-14 09:56:46'),
-(8, 'chiccuts_admin', '$2y$10$yCD0f70T9gIeqZSleO8ctO.jRoLPeWWne2.9lpMr77CGZluo12dy.', 'admin@chiccuts.com', '9345678901', '2025-04-14 09:56:55');
+INSERT INTO `admin` (`admin_id`, `username`, `password`, `email`, `phone_number`, `photo`, `created_at`) VALUES
+(4, 'glowgo_admin', '$2y$10$2goSY7xfaAYbwGDno9b65OboJ/FShMH9Wrr2lUq4OAuKqTsNLMgHa', 'admin@glowgo.com', '9876543210', '', '2025-04-14 09:54:59'),
+(5, 'urban_admin', '$2y$10$ddFMMNIyJ0VJUmGO3W.iHODTQZI3x7fpALqLoC22AGJz.elpw3rYy', 'contact@urbanstyles.com', '9123456780', 0x75706c6f6164732f355f316562326133336535316333343664302e77656270, '2025-04-14 09:56:18'),
+(6, 'hairbar_admin', '$2y$10$7dKiTQ6G4D/hFrR97su5Ke8s204F.blLNO9XLY7wooz.keKeTvIi.', 'hello@thehairbar.com', '9988776655', '', '2025-04-14 09:56:32'),
+(7, 'bliss_admin', '$2y$10$HVeC2uqXXVC3LMkPmCSIluFI.L4yr1hKfQiQEbrsf.1QiruSfpnfe', 'support@blissbeauty.com', '9090909090', '', '2025-04-14 09:56:46'),
+(8, 'chiccuts_admin', '$2y$10$yCD0f70T9gIeqZSleO8ctO.jRoLPeWWne2.9lpMr77CGZluo12dy.', 'admin@chiccuts.com', '9345678901', '', '2025-04-14 09:56:55');
 
 -- --------------------------------------------------------
 
@@ -64,7 +65,14 @@ CREATE TABLE `appointment` (
   `payment_status` enum('pending','paid') NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `salon_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `appointment`
+--
+
+INSERT INTO `appointment` (`appointment_id`, `customer_id`, `admin_id`, `service_id`, `staff_id`, `appointment_date`, `status`, `payment_status`, `created_at`, `salon_id`) VALUES
+(7, 19, 5, 7, 6, '2025-04-19 14:30:00', 'booked', 'paid', '2025-04-18 15:44:00', 5);
 
 -- --------------------------------------------------------
 
@@ -78,19 +86,21 @@ CREATE TABLE `customer` (
   `password` varchar(255) NOT NULL,
   `email` varchar(150) NOT NULL,
   `phone_number` varchar(15) NOT NULL,
+  `photo` longblob NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `customer`
 --
 
-INSERT INTO `customer` (`customer_id`, `username`, `password`, `email`, `phone_number`, `created_at`) VALUES
-(14, 'anika_raj', '$2y$10$9ycZX9jNmrmulsHioUmXZ.KCt44PWqebDi/VGyjm2O3E97Y/Fhy9y', 'anika.raj@gmail.com', '9812345678', '2025-04-14 13:30:01'),
-(15, 'rohan_mehta', '$2y$10$ONeu4NsiOgBcuCM60FfBQu9aO4PSp6fsLrym2CPujxZMJG4kKiUIu', 'rohan.mehta@yahoo.com', '9876543212', '2025-04-14 13:30:15'),
-(16, 'meera_singh', '$2y$10$b5Xks5LRvBZHFusSqV3eZOBily.AvuYSEquo94ENPs7zb2qPR8Pnm', 'meera.singh@hotmail.com', '9988776655', '2025-04-14 13:30:24'),
-(17, 'vishal_kumar', '$2y$10$jCBcJR6obiQl.dzOMDEkU.wG9wsIhwVY0AXxolMbf88YceCyWBqZ6', 'vishal.kumar@gmail.com', '9765432188', '2025-04-14 13:30:35'),
-(18, 'sanya_jain', '$2y$10$eylLWOKsxnO26HiZnAbYj.a6HNgDFGpIH.aNTXjptCAAC2PEr6Mm.', 'sanya.jain@outlook.com', '9090901122', '2025-04-14 13:30:47');
+INSERT INTO `customer` (`customer_id`, `username`, `password`, `email`, `phone_number`, `photo`, `created_at`) VALUES
+(14, 'anika_raj', '$2y$10$9ycZX9jNmrmulsHioUmXZ.KCt44PWqebDi/VGyjm2O3E97Y/Fhy9y', 'anika_raj@gmail.com', '9812345678', 0x363830323531346261393262632e706e67, '2025-04-14 13:30:01'),
+(15, 'rohan_mehta', '$2y$10$ONeu4NsiOgBcuCM60FfBQu9aO4PSp6fsLrym2CPujxZMJG4kKiUIu', 'rohan.mehta@yahoo.com', '9876543212', '', '2025-04-14 13:30:15'),
+(16, 'meera_singh', '$2y$10$b5Xks5LRvBZHFusSqV3eZOBily.AvuYSEquo94ENPs7zb2qPR8Pnm', 'meera.singh@hotmail.com', '9988776655', '', '2025-04-14 13:30:24'),
+(17, 'vishal_kumar', '$2y$10$jCBcJR6obiQl.dzOMDEkU.wG9wsIhwVY0AXxolMbf88YceCyWBqZ6', 'vishal.kumar@gmail.com', '9765432188', '', '2025-04-14 13:30:35'),
+(18, 'sanya_jain', '$2y$10$eylLWOKsxnO26HiZnAbYj.a6HNgDFGpIH.aNTXjptCAAC2PEr6Mm.', 'sanya.jain@outlook.com', '9090901122', '', '2025-04-14 13:30:47'),
+(19, 'malhar2460', '$2y$10$bJzB/KgXDRNnyVMm7l1LA.3AwpuUls6hHzsCkjqycOJmTHDtBtsc6', 'malhar.c.prajapati@gmail.com', '9978647546', 0x75706c6f6164732f3132373937343334362e6a706567, '2025-04-18 06:40:20');
 
 -- --------------------------------------------------------
 
@@ -106,7 +116,7 @@ CREATE TABLE `customer_queries` (
   `message` text NOT NULL,
   `submission_date` timestamp NOT NULL DEFAULT current_timestamp(),
   `status` enum('pending','resolved') NOT NULL DEFAULT 'pending'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -120,7 +130,7 @@ CREATE TABLE `payment` (
   `amount` decimal(10,0) NOT NULL,
   `payment_method` enum('credit_card','debit_card','paypal','wallet') NOT NULL,
   `payment_date` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -136,7 +146,7 @@ CREATE TABLE `review` (
   `review_text` text NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `salon_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -152,7 +162,7 @@ CREATE TABLE `salon` (
   `admin_id` int(11) NOT NULL,
   `description` text NOT NULL,
   `image` varchar(200) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `salon`
@@ -180,27 +190,27 @@ CREATE TABLE `services` (
   `description` text NOT NULL,
   `salon_id` int(11) NOT NULL,
   `image` varchar(200) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `services`
 --
 
 INSERT INTO `services` (`service_id`, `service_name`, `category`, `price`, `duration`, `description`, `salon_id`, `image`) VALUES
-(4, 'Classic Haircut', 'Hair', '350', 30, 'Personalized haircut with expert stylist.', 4, '..//haircut.jpg'),
-(5, 'Herbal Facial', 'Skin', '700', 45, 'Soothing facial using herbal products for glowing skin.', 4, '..//facial.jpeg'),
-(6, 'Manicure & Pedicure', 'Nails', '850', 60, 'Relaxing mani-pedi combo with massage.', 4, '..//manipedi.jpg'),
-(7, 'Beard Styling', 'Grooming', '300', 20, 'Professional beard trimming and shaping.', 5, '..//beard.jpeg'),
-(8, 'Hair Coloring', 'Hair', '1200', 90, 'Global or highlight hair coloring with branded products.', 5, '..//haircolor.jpg'),
-(9, 'Detan Face Pack', 'Skin', '450', 30, 'Instant glow with detan face treatment.', 5, '..//detan.jpeg'),
-(10, 'Hair Spa', 'Hair', '900', 60, 'Deep conditioning and scalp massage for hair health.', 6, '..//hairspa.jpg'),
-(11, 'Threading (Eyebrows)', 'Beauty', '60', 10, 'Precise eyebrow shaping with threading.', 6, '..//threading.jpg'),
-(12, 'Basic Cleanup', 'Skin', '500', 35, 'Quick face cleansing and massage.', 6, '..//cleanup.jpg'),
-(13, 'Bridal Makeup', 'Makeup', '6000', 120, 'Full bridal makeup with pre-wedding consultation.', 7, '..//bridal.jpg'),
-(14, 'Head Massage', 'Spa', '300', 20, 'Stress-relieving head massage with oils.', 7, '..//headmassage.jpg'),
-(15, 'Straightening', 'Hair', '2000', 120, 'Hair straightening using L’Oreal and Schwarzkopf.', 8, '..//straightening.jpg'),
-(16, 'Body Wax', 'Beauty', '1500', 90, 'Complete waxing package using aloe-vera wax.', 8, '..//waxing.jpeg'),
-(17, 'O3+ Whitening Facial', 'Skin', '1100', 60, 'Skin brightening facial using O3+ products.', 8, '..//O3.jpg');
+(4, 'Classic Haircut', 'Hair', 350, 30, 'Personalized haircut with expert stylist.', 4, '..//haircut.jpg'),
+(5, 'Herbal Facial', 'Skin', 700, 45, 'Soothing facial using herbal products for glowing skin.', 4, '..//facial.jpeg'),
+(6, 'Manicure & Pedicure', 'Nails', 850, 60, 'Relaxing mani-pedi combo with massage.', 4, '..//manipedi.jpg'),
+(7, 'Beard Styling', 'Grooming', 300, 20, 'Professional beard trimming and shaping.', 5, '..//beard.jpeg'),
+(8, 'Hair Coloring', 'Hair', 1200, 90, 'Global or highlight hair coloring with branded products.', 5, '..//haircolor.jpg'),
+(9, 'Detan Face Pack', 'Skin', 450, 30, 'Instant glow with detan face treatment.', 5, '..//detan.jpeg'),
+(10, 'Hair Spa', 'Hair', 900, 60, 'Deep conditioning and scalp massage for hair health.', 6, '..//hairspa.jpg'),
+(11, 'Threading (Eyebrows)', 'Beauty', 60, 10, 'Precise eyebrow shaping with threading.', 6, '..//threading.jpg'),
+(12, 'Basic Cleanup', 'Skin', 500, 35, 'Quick face cleansing and massage.', 6, '..//cleanup.jpg'),
+(13, 'Bridal Makeup', 'Makeup', 6000, 120, 'Full bridal makeup with pre-wedding consultation.', 7, '..//bridal.jpg'),
+(14, 'Head Massage', 'Spa', 300, 20, 'Stress-relieving head massage with oils.', 7, '..//headmassage.jpg'),
+(15, 'Straightening', 'Hair', 2000, 120, 'Hair straightening using L’Oreal and Schwarzkopf.', 8, '..//straightening.jpg'),
+(16, 'Body Wax', 'Beauty', 1500, 90, 'Complete waxing package using aloe-vera wax.', 8, '..//waxing.jpeg'),
+(17, 'O3+ Whitening Facial', 'Skin', 1100, 60, 'Skin brightening facial using O3+ products.', 8, '..//O3.jpg');
 
 -- --------------------------------------------------------
 
@@ -217,7 +227,7 @@ CREATE TABLE `staff` (
   `availability` enum('available','unavailable') NOT NULL,
   `salon_id` int(11) NOT NULL,
   `image` varchar(200) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `staff`
@@ -301,19 +311,19 @@ ALTER TABLE `staff`
 -- AUTO_INCREMENT for table `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `appointment`
 --
 ALTER TABLE `appointment`
-  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `customer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `customer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `customer_queries`
@@ -337,13 +347,13 @@ ALTER TABLE `review`
 -- AUTO_INCREMENT for table `salon`
 --
 ALTER TABLE `salon`
-  MODIFY `salon_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `salon_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `services`
 --
 ALTER TABLE `services`
-  MODIFY `service_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `service_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `staff`

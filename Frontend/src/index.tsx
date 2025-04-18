@@ -11,6 +11,10 @@ import { AdminStaff } from "./screens/AdminStaff/AdminStaff"; // Example new pag
 import { AdminSchedule } from "./screens/AdminSchedule/AdminSchedule"; // Example new page
 import { AppointmentDetails } from "./screens/AdminSchedule/AppointmentDetails"; // Example new page
 import { LogIn } from "./screens/LogIn/LogIn"; // Example new page
+import { Profile } from "./screens/Profile/Profile";
+import { AdminProfile } from "./screens/AdminProfile/AdminProfile";
+import { Booking } from "./screens/Booking/Booking";
+import { AdminServices } from "./screens/AdminServices/AdminServices";
 
 createRoot(document.getElementById("app") as HTMLElement).render(
   <StrictMode>
@@ -27,6 +31,9 @@ createRoot(document.getElementById("app") as HTMLElement).render(
         <Route path="/adminschedule/appointment/:appointmentId" element={<AppointmentDetails />} />
         <Route path="/adminstaff" element={<AdminStaff />} />
         <Route path="/login" element={<LogIn />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/adminprofile" element={<AdminProfile />} />
+        <Route path="/adminservices" element={<AdminServices />} />
       </Routes>
     </Router>
   </StrictMode>

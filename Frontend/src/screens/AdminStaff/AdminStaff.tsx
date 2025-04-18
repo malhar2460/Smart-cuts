@@ -37,13 +37,13 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "../../components/AdminStaff_ui/toggle-group";
-import { Link } from "react-router-dom";
 import axios from "axios";
+import { HeaderSection } from "../AdminDashboard/sections/HeaderSection/HeaderSection";
 
 export const AdminStaff = (): JSX.Element => {
-  // Get salon_id from URL query parameters.
-  const queryParams = new URLSearchParams(window.location.search);
-  const salon_id = queryParams.get("salon_id");
+  // ─── Pull salon_id (and admin_id if you need it) from localStorage ─────
+  const salonId = localStorage.getItem("salon_id");
+  // (Optional) const adminId = localStorage.getItem("admin_id");
 
   // State for staff members list.
   const [staffMembers, setStaffMembers] = useState<any[]>([]);
@@ -67,9 +67,15 @@ export const AdminStaff = (): JSX.Element => {
 
   // Function to fetch staff data.
   const fetchStaff = () => {
-    if (salon_id) {
-      axios
-        .get(`http://localhost/Backend/admin_display_staff.php?salon_id=${salon_id}`, {
+    if (!salonId) {
+      console.error("Missing salon_id in localStorage");
+      return;
+    }
+
+    axios
+      .get(
+        `http://localhost/Backend/admin_display_staff.php?salon_id=${salonId}`,
+        {
           transformResponse: [
             function (data) {
               const jsonStart = data.indexOf("{");
@@ -84,31 +90,31 @@ export const AdminStaff = (): JSX.Element => {
               return {};
             },
           ],
-        })
-        .then((res) => {
-          console.log("Transformed API response (staff):", res.data);
-          if (res.data?.status && Array.isArray(res.data.data)) {
-            setStaffMembers(res.data.data);
-          } else {
-            setStaffMembers([]);
-            console.error("API error or unexpected format (staff):", res.data?.message);
-          }
-        })
-        .catch((err) => console.error("Error fetching staff:", err));
-    }
+        }
+      )
+      .then((res) => {
+        if (res.data?.status && Array.isArray(res.data.data)) {
+          setStaffMembers(res.data.data);
+        } else {
+          setStaffMembers([]);
+          console.error("API error or unexpected format (staff):", res.data?.message);
+        }
+      })
+      .catch((err) => console.error("Error fetching staff:", err));
   };
 
-  // Fetch staff on component mount or when salon_id changes.
+  // Fetch staff on component mount or when salonId changes.
   useEffect(() => {
     fetchStaff();
-  }, [salon_id]);
+  }, [salonId]);
 
   // Handler to delete a staff member.
   const handleDelete = (staff_id: number) => {
+    if (!salonId) return;
     if (window.confirm("Are you sure you want to delete this staff member?")) {
       axios
         .post("http://localhost/Backend/admin_delete_staff.php", {
-          staff_id: staff_id,
+          staff_id,
         })
         .then((res) => {
           if (res.data?.status) {
@@ -134,6 +140,7 @@ export const AdminStaff = (): JSX.Element => {
 
   const handleAddStaff = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!salonId) return;
 
     // Validate all fields for Add Staff.
     if (
@@ -141,8 +148,7 @@ export const AdminStaff = (): JSX.Element => {
       !newStaff.specialization ||
       !newStaff.phone_number ||
       !newStaff.email ||
-      !newStaff.availability ||
-      !salon_id
+      !newStaff.availability
     ) {
       setAddFormMessage("All fields are required");
       return;
@@ -151,12 +157,11 @@ export const AdminStaff = (): JSX.Element => {
     axios
       .post("http://localhost/Backend/admin_add_staff.php", {
         ...newStaff,
-        salon_id: parseInt(salon_id),
+        salon_id: parseInt(salonId, 10),
       })
       .then((res) => {
         if (res.data?.status) {
           setAddFormMessage("Staff member added successfully");
-          // Clear the form inputs.
           setNewStaff({
             staff_name: "",
             specialization: "",
@@ -200,20 +205,11 @@ export const AdminStaff = (): JSX.Element => {
 
   const handleEditStaff = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    if (
-      !editStaff.staff_name ||
-      !editStaff.specialization ||
-      !editStaff.phone_number ||
-      !editStaff.email ||
-      !editStaff.availability ||
-      !editStaff.staff_id
-    ) {
+    if (!editStaff?.staff_id) {
       setEditFormMessage("All fields are required");
       return;
     }
 
-    // Using FormData for multipart/form-data (allows image upload).
     const formData = new FormData();
     formData.append("staff_id", editStaff.staff_id);
     formData.append("staff_name", editStaff.staff_name);
@@ -246,61 +242,13 @@ export const AdminStaff = (): JSX.Element => {
         setEditFormMessage("Error updating staff member");
       });
   };
-
+console.log(salonId)
   return (
     <div className="flex min-h-screen bg-white border-2 border-solid border-[#ced4da] overflow-hidden">
       {/* Sidebar */}
-      <div className="w-64 h-full bg-white border-r border-solid">
-        <div className="p-4">
-          <h1 className="font-bold text-indigo-600 text-2xl leading-6">
-            SmartCuts
-          </h1>
-          <div className="mt-16 space-y-2">
-            <Link to="/admindashboard">
-              <Button
-                variant="ghost"
-                className="w-full justify-start px-4 py-2.5 h-10 text-gray-700"
-              >
-                <img
-                  src="/frame-34.svg"
-                  alt="Dashboard"
-                  className="w-4 h-4 mr-3"
-                />
-                Dashboard
-              </Button>
-            </Link>
-            <Button
-              variant="seconday"
-              className="w-full justify-start px-4 py-2.5 h-10 bg-indigo-50 text-indigo-600"
-            >
-              <img src="/frame-3.svg" alt="Staff" className="w-4 h-4 mr-3" />
-              Staff
-            </Button>
-            <Link to="/adminschedule">
-              <Button
-                variant="ghost"
-                className="w-full justify-start px-4 py-2.5 h-10 text-gray-700"
-              >
-                <img src="/frame-15.svg" alt="Schedule" className="w-4 h-4 mr-3" />
-                Schedule
-              </Button>
-            </Link>
-            <Button
-              variant="ghost"
-              className="w-full justify-start px-4 py-2.5 h-10 text-gray-700"
-            >
-              <img src="/frame-32.svg" alt="Services" className="w-4 h-4 mr-3" />
-              Services
-            </Button>
-            <Button
-              variant="ghost"
-              className="w-full justify-start px-4 py-2.5 h-10 text-gray-700"
-            >
-              <img src="/frame-9.svg" alt="Reports" className="w-4 h-4 mr-3" />
-              Reports
-            </Button>
-          </div>
-        </div>
+      <div>
+
+      <HeaderSection />
       </div>
 
       {/* Main Content */}
@@ -315,12 +263,10 @@ export const AdminStaff = (): JSX.Element => {
               Manage your salon staff and their schedules
             </p>
           </div>
-          <div className="flex items-center">
+          {/* <div className="flex items-center">
             <div className="relative mr-4">
-              <div className="flex items-center justify-center">
-                <BellIcon className="h-5 w-5 text-gray-600" />
-              </div>
-              <div className="absolute left-2 -top-1 right-0 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
+              <BellIcon className="h-5 w-5 text-gray-600" />
+              <div className="absolute left-2 -top-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
                 <span className="text-white text-xs">3</span>
               </div>
             </div>
@@ -328,7 +274,7 @@ export const AdminStaff = (): JSX.Element => {
               <AvatarImage src="/img-1.png" alt="User" />
               <AvatarFallback>U</AvatarFallback>
             </Avatar>
-          </div>
+          </div> */}
         </div>
 
         {/* Search and Filters */}
@@ -519,7 +465,11 @@ export const AdminStaff = (): JSX.Element => {
                   <div className="flex justify-between items-center">
                     <Avatar className="h-16 w-16">
                       <AvatarImage
-                        src={staff.image ? `/uploads/staff/${staff.image}` : "/default-avatar.png"}
+                        src={
+                          staff.image
+                            ? `/uploads/staff/${staff.image}`
+                            : "/default-avatar.png"
+                        }
                         alt={staff.staff_name}
                       />
                       <AvatarFallback>
@@ -553,7 +503,6 @@ export const AdminStaff = (): JSX.Element => {
                     </div>
                   </div>
                 </CardContent>
-                {/* Removed the border-t class here so the horizontal line is gone */}
                 <CardFooter className="flex flex-col items-start pt-4">
                   <h4 className="text-sm text-gray-600 font-medium mb-4">
                     Today's Schedule

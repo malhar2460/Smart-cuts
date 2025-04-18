@@ -10,13 +10,13 @@ header("Access-Control-Allow-Methods: POST");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') 
 {
-    if (empty($_SESSION['admin_id'])) 
+    if (empty($data['admin_id'])) 
     {
         echo json_encode(["status" => "error", "message" => "Admin not logged in."]);
         exit;
     }
 
-    $admin_id = $_SESSION['admin_id'];
+    $admin_id = $data['admin_id'];
     $data = json_decode(file_get_contents("php://input"), true);
 
     $staff_name     = isset($data['staff_name']) ? trim($data['staff_name']) : '';

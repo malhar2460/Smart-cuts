@@ -10,12 +10,12 @@ include 'db_conn.php';
 
 $response = [];
 
-if (!isset($_SESSION['admin_id'])) {
+if (!isset($_POST['admin_id'])) {
     echo json_encode(["status" => false, "message" => "Admin not logged in"]);
     exit;
 }
 
-$admin_id = $_SESSION['admin_id'];
+$admin_id = $_POST['admin_id'];
 
 if (
     isset($_POST['service_id']) &&
@@ -56,7 +56,7 @@ if (
         if (isset($_FILES['image'])) {
             $image = $_FILES['image'];
             $image_name = time() . "_" . basename($image["name"]);
-            $upload_dir = "uploads/services/";
+            $upload_dir = "uploads/";
 
             if (!is_dir($upload_dir)) {
                 mkdir($upload_dir, 0777, true);

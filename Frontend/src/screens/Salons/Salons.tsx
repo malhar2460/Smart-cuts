@@ -17,7 +17,13 @@ import { Separator } from "../../components/Salons_ui/separator";
 import { useState,useEffect } from "react";
 import { Link } from "react-router-dom";
 
+import { FooterSection } from "../HomePage/sections/FooterSection/FooterSection";
+import { HeaderSection } from "../HomePage/sections/HeaderSection";
+import { useNavigate } from "react-router-dom";
+
 export const Salons = (): JSX.Element => {
+  const navigate = useNavigate();
+
   // Data for service categories
   const serviceCategories = [
     { id: 1, name: "Haircut", selected: true },
@@ -122,6 +128,20 @@ export const Salons = (): JSX.Element => {
     return stars;
   };
 
+
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
+    const parsedUser = JSON.parse(user);
+    if (!parsedUser.customer_id) {
+      navigate("/"); // or wherever you want to redirect non-customers
+    }
+  }, [navigate]);
+
   const [salonCards, setSalonCards] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -167,38 +187,7 @@ export const Salons = (): JSX.Element => {
   return (
     <div className="flex flex-col min-h-screen bg-white border-2 border-solid border-[#ced4da]">
       {/* Header */}
-      <header className="w-full py-6 px-20 bg-white">
-        <div className="flex items-center justify-between">
-          <a href="/" className="font-bold text-indigo-600 text-2xl font-['Poppins',Helvetica]">
-            SmartCuts
-          </a>
-          <div className="flex items-center space-x-6">
-            <nav className="flex space-x-6">
-              <a
-                href="salon"
-                className="font-['Poppins',Helvetica] text-indigo-600 text-base"
-              >
-                Salons
-              </a>
-              <a
-                href="about"
-                className="font-['Poppins',Helvetica] text-gray-600 text-base"
-              >
-                About us
-              </a>
-              <a
-                href="contact"
-                className="font-['Poppins',Helvetica] text-gray-600 text-base"
-              >
-                Contact us
-              </a>
-            </nav>
-            <Button className="bg-indigo-600 rounded-full font-['Poppins',Helvetica] text-base">
-              Sign In
-            </Button>
-          </div>
-        </div>
-      </header>
+      <HeaderSection/>
 
       <main className="flex-1 bg-gray-50 px-12 py-6">
         {/* SearchIcon Section */}
@@ -305,92 +294,7 @@ export const Salons = (): JSX.Element => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-20 px-20">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-4 gap-8 mb-16">
-            {/* Company Info */}
-            <div>
-              <h2 className="font-['Poppins',Helvetica] font-bold text-2xl mb-[60px]">
-                SmartCuts
-              </h2>
-              <p className="font-['Poppins',Helvetica] text-gray-400 text-base mb-8">
-                Making salon management smarter and more efficient.
-              </p>
-              <div className="flex space-x-4">
-                <FacebookIcon className="w-5 h-5 text-gray-400" />
-                <TwitterIcon className="w-5 h-5 text-gray-400" />
-                <InstagramIcon className="w-5 h-5 text-gray-400" />
-                <LinkedinIcon className="w-5 h-5 text-gray-400" />
-              </div>
-            </div>
-
-            {/* Company Links */}
-            <div>
-              <h3 className="font-['Poppins',Helvetica] font-bold text-base mb-12">
-                Company
-              </h3>
-              <ul className="space-y-10">
-                {companyLinks.map((link) => (
-                  <li key={link.id}>
-                    <a
-                      href="#"
-                      className="font-['Poppins',Helvetica] text-gray-300 text-base"
-                    >
-                      {link.name}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Support Links */}
-            <div>
-              <h3 className="font-['Poppins',Helvetica] font-bold text-base mb-12">
-                Support
-              </h3>
-              <ul className="space-y-10">
-                {supportLinks.map((link) => (
-                  <li key={link.id}>
-                    <a
-                      href="#"
-                      className="font-['Poppins',Helvetica] text-gray-300 text-base"
-                    >
-                      {link.name}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Subscribe */}
-            <div>
-              <h3 className="font-['Poppins',Helvetica] font-bold text-base mb-12">
-                Subscribe
-              </h3>
-              <p className="font-['Poppins',Helvetica] text-gray-400 text-base mb-6">
-                Get the latest news and updates
-              </p>
-              <div className="flex">
-                <Input
-                  className="h-10 bg-gray-800 border-0 rounded-l-full text-[#adaebc] px-4 font-['Poppins',Helvetica]"
-                  placeholder="Enter your email"
-                />
-                <Button className="h-10 bg-indigo-600 rounded-r-full font-['Poppins',Helvetica] text-base">
-                  Subscribe
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          <Separator className="bg-gray-800 mb-8" />
-
-          <div className="text-center">
-            <p className="font-['Poppins',Helvetica] text-gray-400 text-base">
-              © 2025 SmartCuts. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
+     <FooterSection/>
     </div>
   );
 };

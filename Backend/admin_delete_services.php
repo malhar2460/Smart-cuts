@@ -1,64 +1,75 @@
 <?php
 session_start();
 
-header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type");
-
+header("Access-Control-Allow-Methods: POST");
+header("Content-Type: application/json");
 include 'db_conn.php';
 
+// Only POST allowed
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    echo json_encode(["status" => false, "message" => "Method not allowed"]);
+    echo json_encode(["success" => false, "message" => "Method not allowed"]);
     exit;
 }
 
-if (!isset($_SESSION['admin_id'])) {
-    echo json_encode(["status" => false, "message" => "Admin not logged in"]);
+// Must be logged in
+// if (!isset($input['admin_id'])) {
+//     echo json_encode(["success" => false, "message" => "Admin not logged in"]);
+//     exit;
+// }
+
+$input = json_decode(file_get_contents("php://input"), true);
+
+// service_id required
+if (empty($input['service_id'])) {
+    echo json_encode(["success" => false, "message" => "Service ID is required"]);
     exit;
 }
 
-$admin_id = $_SESSION['admin_id'];
-$data = json_decode(file_get_contents("php://input"), true);
+$service_id = intval($input['service_id']);
+$admin_id   = $input['admin_id'];
 
-if (!isset($data['service_id'])) {
-    echo json_encode(["status" => false, "message" => "Service ID is required"]);
+// Lookup this admin's salon_id
+$stmt = $conn->prepare("SELECT salon_id FROM salon WHERE admin_id = ?");
+$stmt->execute([$admin_id]);
+$salon = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$salon) {
+    echo json_encode(["success" => false, "message" => "Salon not found for this admin"]);
     exit;
 }
 
-$service_id = intval($data['service_id']);
+$salon_id = $salon['salon_id'];
 
 try {
-    $stmt1 = $conn->prepare("SELECT salon_id FROM salon WHERE admin_id = ?");
-    $stmt1->execute([$admin_id]);
-    $salon = $stmt1->fetch(PDO::FETCH_ASSOC);
+    // Ensure service belongs to this salon
+    $check = $conn->prepare("
+      SELECT 1 FROM services 
+      WHERE service_id = ? AND salon_id = ?
+    ");
+    $check->execute([$service_id, $salon_id]);
 
-    if (!$salon) {
-        echo json_encode(["status" => false, "message" => "Salon not found for this admin"]);
+    if (!$check->fetch()) {
+        echo json_encode(["success" => false, "message" => "Service not found"]);
         exit;
     }
 
-    $salon_id = $salon['salon_id'];
+    // Delete
+    $del = $conn->prepare("
+      DELETE FROM services 
+      WHERE service_id = ? AND salon_id = ?
+    ");
+    $del->execute([$service_id, $salon_id]);
 
-    $stmt2 = $conn->prepare("SELECT * FROM services WHERE service_id = ? AND salon_id = ?");
-    $stmt2->execute([$service_id, $salon_id]);
-    $service = $stmt2->fetch(PDO::FETCH_ASSOC);
-
-    if (!$service) {
-        echo json_encode(["status" => false, "message" => "Service not found for this salon"]);
-        exit;
-    }
-
-    $stmt3 = $conn->prepare("DELETE FROM services WHERE service_id = ? AND salon_id = ?");
-    $stmt3->execute([$service_id, $salon_id]);
-
-    if ($stmt3->rowCount() > 0) {
-        echo json_encode(["status" => true, "message" => "Service deleted successfully"]);
+    if ($del->rowCount() > 0) {
+        echo json_encode(["success" => true, "message" => "Service deleted successfully"]);
     } else {
-        echo json_encode(["status" => false, "message" => "Failed to delete service"]);
+        echo json_encode(["success" => false, "message" => "Failed to delete service"]);
     }
-
 } catch (PDOException $e) {
-    echo json_encode(["status" => false, "message" => "Database error: " . $e->getMessage()]);
+    echo json_encode([
+        "success" => false,
+        "message" => "Database error: " . $e->getMessage()
+    ]);
 }
-?>

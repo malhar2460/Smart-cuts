@@ -7,6 +7,6 @@
         }
     },
     "require": {
-        "firebase/php-jwt": "*"
+        "firebase/php-jwt": "^6.11"
     }
 }
