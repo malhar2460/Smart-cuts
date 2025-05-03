@@ -5,8 +5,7 @@ header("Access-Control-Allow-Headers: Content-Type");
 
 include 'db_conn.php';
 
-$response = [];
-
+// We no longer require $_POST['password'] here
 if (
     isset($_POST['staff_id']) &&
     isset($_POST['staff_name']) &&
@@ -15,65 +14,70 @@ if (
     isset($_POST['email']) &&
     isset($_POST['availability'])
 ) {
-
-    $staff_id = intval($_POST['staff_id']);
-    $staff_name = $_POST['staff_name'];
-    $specialization = $_POST['specialization'];
-    $phone_number = $_POST['phone_number'];
-    $email = $_POST['email'];
-    $availability = $_POST['availability'];
+    $staff_id       = intval($_POST['staff_id']);
+    $username     = trim($_POST['staff_name']);
+    $raw_password   = trim($_POST['password'] ?? '');
+    $specialization = trim($_POST['specialization']);
+    $phone_number   = trim($_POST['phone_number']);
+    $email          = trim($_POST['email']);
+    $availability   = trim($_POST['availability']);
 
     try {
-  
-        if (isset($_FILES['image'])) {
-            $image = $_FILES['image'];
-            $image_name = time() . "_" . basename($image["name"]);
+        // Build base SQL and params
+        $params = [
+            $username,
+            $specialization,
+            $phone_number,
+            $email,
+            $availability,
+        ];
+        $sql = "UPDATE staff SET 
+                    username   = ?, 
+                    specialization= ?, 
+                    phone_number = ?, 
+                    email        = ?, 
+                    availability = ?";
+
+        // If a new password was provided, hash it & include in UPDATE
+        if ($raw_password !== '') {
+            $hashed = password_hash($raw_password, PASSWORD_BCRYPT);
+            $sql .= ", password = ?";
+            $params[] = $hashed;
+        }
+
+        // If an image file was uploaded, handle it & include in UPDATE
+        if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+            $photo      = $_FILES['image'];
+            $photo_name = time() . "_" . basename($photo["name"]);
             $upload_dir = "uploads/staff/";
 
             if (!is_dir($upload_dir)) {
                 mkdir($upload_dir, 0777, true);
             }
+            $upload_path = $upload_dir . $photo_name;
 
-            $upload_path = $upload_dir . $image_name;
-
-            if (move_uploaded_file($image["tmp_name"], $upload_path)) {
-
-                $stmt = $conn->prepare("UPDATE staff 
-                    SET staff_name = ?, specialization = ?, phone_number = ?, email = ?, availability = ?, image = ? 
-                    WHERE staff_id = ?");
-                $stmt->execute([$staff_name, $specialization, $phone_number, $email, $availability, $image_name, $staff_id]);
-            } else {
-                echo json_encode(["status" => false, "message" => "Image upload failed"]);
+            if (!move_uploaded_file($photo["tmp_name"], $upload_path)) {
+                echo json_encode(["status" => false, "message" => "photo upload failed"]);
                 exit;
             }
-        } else {
 
-            $stmt = $conn->prepare("UPDATE staff 
-                SET staff_name = ?, specialization = ?, phone_number = ?, email = ?, availability = ? 
-                WHERE staff_id = ?");
-            $stmt->execute([$staff_name, $specialization, $phone_number, $email, $availability, $staff_id]);
+            $sql .= ", photo = ?";
+            $params[] = $photo_name;
         }
 
-        $response = [
-            "status" => true,
-            "message" => "Staff updated successfully"
-        ];
+        // Finish SQL with WHERE and staff_id
+        $sql .= " WHERE staff_id = ?";
+        $params[] = $staff_id;
+
+        // Prepare & execute
+        $stmt = $conn->prepare($sql);
+        $stmt->execute($params);
+
+        echo json_encode(["status" => true, "message" => "Staff updated successfully"]);
     } catch (PDOException $e) {
-       
-        $response = [
-            "status" => false,
-            "message" => "Database error: " . $e->getMessage()
-        ];
+        echo json_encode(["status" => false, "message" => "Database error: " . $e->getMessage()]);
     }
 } else {
-
-    $response = [
-        "status" => false,
-        "message" => "Missing required fields"
-    ];
+    echo json_encode(["status" => false, "message" => "Missing required fields"]);
 }
-
-
-header("Content-Type: application/json");
-echo json_encode($response);
 ?>

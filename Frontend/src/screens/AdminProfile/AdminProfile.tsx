@@ -5,35 +5,47 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "../../components/AdminDashboard_ui/avatar.tsx";
-import { Button } from "../../components/AdminDashboard_ui/button.tsx";
+} from "../../components/AdminDashboard_ui/avatar";
+import { Button } from "../../components/AdminDashboard_ui/button";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "../../components/AdminDashboard_ui/card.tsx";
+} from "../../components/AdminDashboard_ui/card";
 
 export const AdminProfile = (): JSX.Element => {
   const queryParams = new URLSearchParams(window.location.search);
   const admin_id = queryParams.get("admin_id");
   const navigate = useNavigate();
 
-  const [adminData, setAdminData] = useState<any>({
+  const [adminData, setAdminData] = useState<{
+    name: string;
+    email: string;
+    phone: string;
+    role: string;
+    profile_pic: string;
+  }>({
     name: "",
     email: "",
     phone: "",
     role: "Admin",
     profile_pic: "",
   });
+
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState(adminData);
   const [newProfilePic, setNewProfilePic] = useState<File | null>(null);
 
-  useEffect(() => {
-    if (admin_id) {
-      axios
-        .get(`http://localhost/Backend/admin_profile.php?admin_id=${admin_id}`, {
+  // fetch profile from backend
+  const loadProfile = () => {
+    if (!admin_id) return;
+    axios
+      .get(
+        `http://localhost/Backend/admin_profile.php?admin_id=${encodeURIComponent(
+          admin_id
+        )}`,
+        {
           transformResponse: [
             (data) => {
               const jsonStart = data.indexOf("{");
@@ -47,15 +59,19 @@ export const AdminProfile = (): JSX.Element => {
               return {};
             },
           ],
-        })
-        .then((res) => {
-          if (res.data?.status && res.data.data) {
-            setAdminData(res.data.data);
-            setFormData(res.data.data);
-          }
-        })
-        .catch(console.error);
-    }
+        }
+      )
+      .then((res) => {
+        if (res.data?.status && res.data.data) {
+          setAdminData(res.data.data);
+          setFormData(res.data.data);
+        }
+      })
+      .catch(console.error);
+  };
+
+  useEffect(() => {
+    loadProfile();
   }, [admin_id]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,8 +85,9 @@ export const AdminProfile = (): JSX.Element => {
   };
 
   const handleSave = () => {
+    if (!admin_id) return;
     const fd = new FormData();
-    fd.append("admin_id", admin_id!);
+    fd.append("admin_id", admin_id);
     fd.append("name", formData.name);
     fd.append("email", formData.email);
     fd.append("phone", formData.phone);
@@ -80,12 +97,9 @@ export const AdminProfile = (): JSX.Element => {
       .post("http://localhost/Backend/update_admin_profile.php", fd)
       .then((res) => {
         if (res.data?.status) {
-          setAdminData({
-            ...formData,
-            profile_pic: newProfilePic
-              ? URL.createObjectURL(newProfilePic)
-              : adminData.profile_pic,
-          });
+          // after saving, reload profile so we get the new uploads/<file>.jpg path
+          loadProfile();
+          setNewProfilePic(null);
           setIsEditing(false);
         }
       })
@@ -93,7 +107,6 @@ export const AdminProfile = (): JSX.Element => {
   };
 
   const handleLogout = () => {
-    // clear all auth-related storage
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     localStorage.removeItem("role");
@@ -101,8 +114,13 @@ export const AdminProfile = (): JSX.Element => {
     localStorage.removeItem("salon_id");
     localStorage.removeItem("staff_id");
     localStorage.removeItem("customer_id");
-    navigate("/login");
+    navigate("/");
   };
+
+  // build full URL for the image; fallback to default
+  const imageUrl = adminData.profile_pic
+    ? `http://localhost/Backend/${adminData.profile_pic}`
+    : "default-profile.png";
 
   return (
     <div className="p-6 md:p-10 bg-gray-50 min-h-screen font-['Poppins']">
@@ -116,7 +134,9 @@ export const AdminProfile = (): JSX.Element => {
         <div className="flex space-x-2">
           <Button
             onClick={() =>
-              navigate(`/admindashboard?admin_id=${encodeURIComponent(admin_id!)}`)
+              navigate(
+                `/admindashboard?admin_id=${encodeURIComponent(admin_id || "")}`
+              )
             }
           >
             Back to Dashboard
@@ -130,16 +150,8 @@ export const AdminProfile = (): JSX.Element => {
       <Card className="w-full max-w-2xl mx-auto rounded-2xl shadow-md border border-gray-200">
         <CardHeader className="flex flex-col items-center gap-3 py-6">
           <Avatar className="h-24 w-24 shadow-sm">
-            <AvatarImage
-              src={
-                JSON.parse(localStorage.getItem("user") || "{}").photoUrl ||
-                "default-profile.png"
-              }
-              alt={adminData.name}
-            />
-            <AvatarFallback>
-              {adminData.name?.[0] ?? "A"}
-            </AvatarFallback>
+            <AvatarImage src={imageUrl} alt={adminData.name} />
+            <AvatarFallback>{adminData.name?.[0] ?? "A"}</AvatarFallback>
           </Avatar>
 
           <CardTitle className="text-2xl font-bold text-gray-800">
@@ -211,6 +223,7 @@ export const AdminProfile = (): JSX.Element => {
                   variant="secondary"
                   onClick={() => {
                     setFormData(adminData);
+                    setNewProfilePic(null);
                     setIsEditing(false);
                   }}
                 >
@@ -219,9 +232,7 @@ export const AdminProfile = (): JSX.Element => {
                 <Button onClick={handleSave}>Save</Button>
               </>
             ) : (
-              <Button onClick={() => setIsEditing(true)}>
-                Edit Profile
-              </Button>
+              <Button onClick={() => setIsEditing(true)}>Edit Profile</Button>
             )}
           </div>
         </CardContent>

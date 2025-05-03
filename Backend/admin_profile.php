@@ -26,10 +26,8 @@ try {
     $stmt->execute();
 
     if ($admin = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        // Build the response
-        // If your `photo` column is just a filename, you might prefix it with your uploads path:
-        //   $profilePic = '/uploads/' . basename($admin['photo']);
         $profilePic = $admin['photo'];
+        $profilePic = '/uploads/' . basename($admin['photo']);
 
         echo json_encode([
             'status' => true,

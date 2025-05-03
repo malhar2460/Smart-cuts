@@ -14,7 +14,7 @@ export const Profile = (): JSX.Element => {
 
   useEffect(() => {
     if (!token) {
-      navigate('/login');
+      navigate('/');
       return;
     }
 
@@ -75,6 +75,7 @@ export const Profile = (): JSX.Element => {
           localStorage.setItem('user', JSON.stringify(data.user));
           setMessage('Profile updated successfully');
           setPreview(data.user.photo_url || '/default-avatar.png');
+          location.reload();
         } else {
           setMessage(data.message);
         }
@@ -118,12 +119,12 @@ export const Profile = (): JSX.Element => {
                 <div>
                   <label htmlFor="username" className="block text-lg font-medium text-gray-700">Username</label>
                   <input
-  id="username"
-  name="username"
-  value={form.username || ''}
-  onChange={handleChange}
-  className="w-full mt-2 p-4 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-/>
+                    id="username"
+                    name="username"
+                    value={form.username || ''}
+                    onChange={handleChange}
+                    className="w-full mt-2 p-4 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  />
 
                 </div>
                 <div>

@@ -1,255 +1,302 @@
+// src/screens/Salons.tsx
 import {
   ChevronDownIcon,
-  FacebookIcon,
-  InstagramIcon,
-  LinkedinIcon,
   MapPinIcon,
   SearchIcon,
   StarIcon,
-  TwitterIcon,
 } from "lucide-react";
-import React from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Badge } from "../../components/Salons_ui/badge";
 import { Button } from "../../components/Salons_ui/button";
 import { Card, CardContent } from "../../components/Salons_ui/card";
 import { Input } from "../../components/Salons_ui/input";
-import { Separator } from "../../components/Salons_ui/separator";
-import { useState,useEffect } from "react";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
 import { FooterSection } from "../HomePage/sections/FooterSection/FooterSection";
 import { HeaderSection } from "../HomePage/sections/HeaderSection";
-import { useNavigate } from "react-router-dom";
+
+interface Salon {
+  id: number;
+  name: string;
+  image: string;
+  description: string;
+  stars: number;
+  reviews: number;
+  location: string;
+  avgPrice: number;
+  avgDuration: number;
+}
+
+interface Service {
+  category: string;
+}
 
 export const Salons = (): JSX.Element => {
   const navigate = useNavigate();
 
-  // Data for service categories
-  const serviceCategories = [
-    { id: 1, name: "Haircut", selected: true },
-    { id: 2, name: "Coloring", selected: false },
-    { id: 3, name: "Styling", selected: false },
-    { id: 4, name: "Treatment", selected: false },
-  ];
+  // --- UI state ---
+  const [searchText, setSearchText] = useState("");
+  const [locationText, setLocationText] = useState("");
+  const [priceRange, setPriceRange] = useState<{ min: number; max: number }>({
+    min: 0,
+    max: Infinity,
+  });
+  const [durationRange, setDurationRange] = useState<{ min: number; max: number }>({
+    min: 0,
+    max: Infinity,
+  });
+  const [ratingFilter, setRatingFilter] = useState<number | "">("");
 
-  // Data for filter options
-  const filterOptions = [
-    { id: 1, name: "Price Range" },
-    { id: 2, name: "Duration" },
-    { id: 3, name: "Rating" },
-  ];
+  // --- Salon data ---
+  const [salonCards, setSalonCards] = useState<Salon[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Data for salon cards
-  // const salonCards = [
-  //   {
-  //     id: 1,
-  //     name: "Style & Grace Salon",
-  //     image: "..//img.png",
-  //     badge: "Featured",
-  //     rating: 4.5,
-  //     reviews: 128,
-  //     description:
-  //       "Luxury salon offering premium cuts, coloring, and styling services in a modern setting.",
-  //     stars: 4.5,
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Chic Cuts Studio",
-  //     image: "..//img-1.png",
-  //     badge: "Popular",
-  //     rating: 4,
-  //     reviews: 96,
-  //     description:
-  //       "Trendy salon specializing in modern cuts and creative coloring techniques.",
-  //     stars: 4,
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Elite Hair Lounge",
-  //     image: "..//img-2.png",
-  //     badge: "",
-  //     rating: 5,
-  //     reviews: 156,
-  //     description:
-  //       "Premium salon experience with expert stylists and luxury hair treatments.",
-  //     stars: 5,
-  //   },
-  // ];
+  // --- Categories state ---
+  const [salonCategories, setSalonCategories] = useState<Record<number,string[]>>({});
+  const [allCategories, setAllCategories] = useState<string[]>([]);
+  const [selectedCats, setSelectedCats] = useState<string[]>([]); // start empty
 
-  // Data for footer links
-  const companyLinks = [
-    { id: 1, name: "About" },
-    { id: 2, name: "Careers" },
-    { id: 3, name: "Press" },
-    { id: 4, name: "Blog" },
-  ];
+  // require customer login
+  useEffect(() => {
+    const u = localStorage.getItem("user");
+    if (!u) return void navigate("/login");
+    if (!JSON.parse(u).customer_id) return void navigate("/");
+  }, [navigate]);
 
-  const supportLinks = [
-    { id: 1, name: "Help Center" },
-    { id: 2, name: "Contact Us" },
-    { id: 3, name: "Privacy Policy" },
-    { id: 4, name: "Terms of Service" },
-  ];
+  // fetch all salons
+  useEffect(() => {
+    fetch("http://localhost/Backend/display_salons.php")
+      .then((res) => {
+        if (!res.ok) throw new Error("Network response not ok");
+        return res.json();
+      })
+      .then((data) => {
+        if (data.success && Array.isArray(data.services)) {
+          const mapped: Salon[] = data.services.map((s: any) => ({
+            id:           s.salon_id,
+            name:         s.salon_name,
+            image:        s.image.replace(/^(\.\.\/)+/, ""),
+            description:  s.description,
+            stars:        Number(s.avg_rating) || 0,
+            reviews:      Number(s.review_count) || 0,
+            location:     s.location,
+            avgPrice:     Number(s.average_price)   || 0,
+            avgDuration:  Number(s.average_duration) || 0,
+          }));
+          setSalonCards(mapped);
+        } else {
+          throw new Error("Unexpected data format");
+        }
+      })
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
+  }, []);
 
-  // Function to render star ratings
+  // once salons are loaded, fetch each salon’s services → build categories
+  useEffect(() => {
+    if (salonCards.length === 0) return;
+    Promise.all(
+      salonCards.map((salon) =>
+        fetch(
+          `http://localhost/Backend/display_services.php?salon_id=${salon.id}`
+        )
+          .then((r) => r.json())
+          .then((d) =>
+            Array.isArray(d.services)
+              ? Array.from(new Set(d.services.map((svc: Service) => svc.category)))
+              : []
+          )
+          .catch(() => [])
+      )
+    )
+      .then((arrays) => {
+        const catMap: Record<number,string[]> = {};
+        salonCards.forEach((s, idx) => (catMap[s.id] = arrays[idx]));
+        setSalonCategories(catMap);
+        // master list
+        setAllCategories(Array.from(new Set(arrays.flat())));
+      })
+      .catch(console.error);
+  }, [salonCards]);
+
+  // filter out salons
+  const displayed = useMemo(() => {
+    return salonCards.filter((s) => {
+      // name
+      if (searchText && !s.name.toLowerCase().includes(searchText.toLowerCase()))
+        return false;
+      // location
+      if (
+        locationText &&
+        !s.location.toLowerCase().includes(locationText.toLowerCase())
+      )
+        return false;
+      // price
+      if (priceRange.min && s.avgPrice < priceRange.min) return false;
+      if (priceRange.max !== Infinity && s.avgPrice > priceRange.max) return false;
+      // duration
+      if (durationRange.min && s.avgDuration < durationRange.min) return false;
+      if (
+        durationRange.max !== Infinity &&
+        s.avgDuration > durationRange.max
+      )
+        return false;
+      // rating
+      if (ratingFilter !== "" && Math.floor(s.stars) < ratingFilter) return false;
+      // category — only if user selected at least one
+      if (selectedCats.length > 0) {
+        const cats = salonCategories[s.id] || [];
+        if (!cats.some((c) => selectedCats.includes(c))) return false;
+      }
+      return true;
+    });
+  }, [
+    salonCards,
+    searchText,
+    locationText,
+    priceRange,
+    durationRange,
+    ratingFilter,
+    salonCategories,
+    selectedCats,
+  ]);
+
+  // star rendering helper
   const renderStars = (rating: number) => {
-    const stars = [];
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 !== 0;
-
-    for (let i = 0; i < fullStars; i++) {
+    const full = Math.floor(rating);
+    const half = rating - full >= 0.5;
+    const stars: JSX.Element[] = [];
+    for (let i = 0; i < full; i++) {
       stars.push(
-        <StarIcon
-          key={`full-${i}`}
-          className="w-[18px] h-4 text-yellow-400 fill-yellow-400"
-        />,
+        <StarIcon key={`f${i}`} className="w-[18px] h-4 text-yellow-400 fill-yellow-400" />
       );
     }
-
-    if (hasHalfStar) {
+    if (half) {
       stars.push(
-        <StarIcon
-          key="half"
-          className="w-[18px] h-4 text-yellow-400 fill-yellow-400"
-        />,
+        <StarIcon key="half" className="w-[18px] h-4 text-yellow-400 fill-yellow-400" />
       );
     }
-
-    const remainingStars = 5 - stars.length;
-    for (let i = 0; i < remainingStars; i++) {
+    while (stars.length < 5) {
       stars.push(
-        <StarIcon
-          key={`empty-${i}`}
-          className="w-[18px] h-4 text-yellow-400"
-        />,
+        <StarIcon key={`e${stars.length}`} className="w-[18px] h-4 text-yellow-400" />
       );
     }
-
     return stars;
   };
 
-
-  useEffect(() => {
-    const user = localStorage.getItem("user");
-    if (!user) {
-      navigate("/login");
-      return;
-    }
-
-    const parsedUser = JSON.parse(user);
-    if (!parsedUser.customer_id) {
-      navigate("/"); // or wherever you want to redirect non-customers
-    }
-  }, [navigate]);
-
-  const [salonCards, setSalonCards] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  // Fetch salon data from the API
-  useEffect(() => {
-    fetch("http://localhost/Backend/display_salons.php")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      // Inside your useEffect's .then() block:
-      .then((data) => {
-        console.log("Fetched salon data:", data);
-        if (data && data.success && Array.isArray(data.services)) {
-          // Map API response to your component's expected structure
-          const mappedSalons = data.services.map((service: any) => ({
-            id: service.salon_id,
-            name: service.salon_name,
-            image: service.image,
-            badge: "", // Set badge if needed
-            description: service.description,
-            stars: 5, // You may adjust ratings as needed
-            reviews: 0, // You may adjust reviews as needed
-          }));
-          setSalonCards(mappedSalons);
-        } else {
-          console.error("Unexpected data format:", data);
-          setError("Unexpected data format");
-        }
-        setLoading(false);
-      })
-
-      .catch((err) => {
-        console.error("Failed to fetch salon data:", err);
-        setError("Failed to load salons.");
-        setLoading(false);
-      });
-  }, []);
-
   return (
     <div className="flex flex-col min-h-screen bg-white border-2 border-solid border-[#ced4da]">
-      {/* Header */}
-      <HeaderSection/>
+      <HeaderSection />
 
       <main className="flex-1 bg-gray-50 px-12 py-6">
-        {/* SearchIcon Section */}
+        {/* Search & Location */}
         <div className="max-w-7xl mx-auto mt-6 mb-10">
           <div className="flex gap-4">
             <div className="relative flex-grow">
               <SearchIcon className="absolute left-4 top-3.5 w-4 h-4 text-[#adaebc]" />
               <Input
-                className="pl-12 h-[50px] rounded-xl text-base font-['Inter',Helvetica] text-[#adaebc]"
-                placeholder="SearchIcon salons..."
+                className="pl-12 h-[50px] rounded-xl text-base"
+                placeholder="Search salons…"
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
               />
             </div>
             <div className="relative w-64">
               <MapPinIcon className="absolute left-4 top-3.5 w-3 h-4 text-[#adaebc]" />
               <Input
-                className="pl-12 h-[50px] rounded-xl text-base font-['Inter',Helvetica] text-[#adaebc]"
+                className="pl-12 h-[50px] rounded-xl text-base"
                 placeholder="Location"
+                value={locationText}
+                onChange={(e) => setLocationText(e.target.value)}
               />
             </div>
           </div>
         </div>
 
-        {/* Category Filters */}
+        {/* Dynamic Category Filters */}
         <div className="max-w-7xl mx-auto mb-8">
-          <div className="flex space-x-4 mb-6">
-            {serviceCategories.map((category) => (
+          <div className="flex flex-wrap gap-2 mb-6">
+            {allCategories.map((cat) => (
               <Button
-                key={category.id}
-                variant={category.selected ? "default" : "outline"}
+                key={cat}
+                variant={selectedCats.includes(cat) ? "default" : "outline"}
                 className={`rounded-full px-6 py-2.5 h-10 ${
-                  category.selected
+                  selectedCats.includes(cat)
                     ? "bg-blue-600 text-white"
-                    : "bg-gray-100 text-gray-600 border-0"
-                } font-['Inter',Helvetica] text-base`}
+                    : "bg-gray-100 text-gray-600"
+                } text-base`}
+                onClick={() =>
+                  setSelectedCats((prev) =>
+                    prev.includes(cat)
+                      ? prev.filter((c) => c !== cat)
+                      : [...prev, cat]
+                  )
+                }
               >
-                {category.name}
+                {cat}
               </Button>
             ))}
           </div>
 
+          {/* Price / Duration / Rating dropdowns */}
           <div className="flex space-x-4">
-            {filterOptions.map((option) => (
-              <Button
-                key={option.id}
-                variant="outline"
-                className="flex justify-between items-center h-10 bg-white rounded-lg font-['Inter',Helvetica] text-base"
-              >
-                {option.name}
-                <ChevronDownIcon className="ml-2 h-6 w-6" />
-              </Button>
-            ))}
+            <select
+              value={`${priceRange.min}-${priceRange.max === Infinity ? "" : priceRange.max}`}
+              onChange={(e) => {
+                const [min, max] = e.target.value.split("-");
+                setPriceRange({
+                  min: Number(min) || 0,
+                  max: max ? Number(max) : Infinity,
+                });
+              }}
+              className="h-10 px-4 border rounded bg-white"
+            >
+              <option value="0-">All Prices</option>
+              <option value="0-500">0 – 500</option>
+              <option value="500-1000">500 – 1 000</option>
+              <option value="1000-">1 000 +</option>
+            </select>
+            <select
+              value={`${durationRange.min}-${durationRange.max === Infinity ? "" : durationRange.max}`}
+              onChange={(e) => {
+                const [min, max] = e.target.value.split("-");
+                setDurationRange({
+                  min: Number(min) || 0,
+                  max: max ? Number(max) : Infinity,
+                });
+              }}
+              className="h-10 px-4 border rounded bg-white"
+            >
+              <option value="0-">All Durations</option>
+              <option value="0-30">Up to 30 min</option>
+              <option value="30-60">30 – 60 min</option>
+              <option value="60-">60 + min</option>
+            </select>
+            <select
+              value={ratingFilter}
+              onChange={(e) =>
+                setRatingFilter(e.target.value === "" ? "" : Number(e.target.value))
+              }
+              className="h-10 px-4 border rounded bg-white"
+            >
+              <option value="">All Ratings</option>
+              <option value="5">5 stars</option>
+              <option value="4">4 ★ & up</option>
+              <option value="3">3 ★ & up</option>
+              <option value="2">2 ★ & up</option>
+              <option value="1">1 ★ & up</option>
+            </select>
           </div>
         </div>
 
-         {/* Salon Cards */}
-         <div className="max-w-7xl mx-auto grid grid-cols-3 gap-6">
+        {/* Salon Grid */}
+        <div className="max-w-7xl mx-auto grid grid-cols-3 gap-6">
           {loading ? (
-            <p>Loading salons...</p>
+            <p>Loading salons…</p>
           ) : error ? (
             <p className="text-red-500">{error}</p>
-          ) : salonCards.length > 0 ? (
-            salonCards.map((salon) => (
+          ) : displayed.length > 0 ? (
+            displayed.map((salon) => (
               <Card
                 key={salon.id}
                 className="rounded-xl shadow-sm overflow-hidden"
@@ -257,30 +304,26 @@ export const Salons = (): JSX.Element => {
                 <div
                   className="relative h-48 bg-cover bg-center"
                   style={{ backgroundImage: `url(${salon.image})` }}
-                >
-                  {salon.badge && (
-                    <div className="absolute top-4 right-4">
-                      <Badge className="bg-white text-black font-medium text-sm px-3 py-1 rounded-full">
-                        {salon.badge}
-                      </Badge>
-                    </div>
-                  )}
-                </div>
+                />
                 <CardContent className="p-6">
-                  <h3 className="font-['Inter',Helvetica] text-xl font-normal text-black mb-4">
+                  <h3 className="text-xl font-normal text-black mb-4">
                     {salon.name}
                   </h3>
-                  <div className="flex items-center mb-4">
+                  <div className="flex items-center mb-1">
                     <div className="flex">{renderStars(salon.stars)}</div>
-                    <span className="ml-2 font-['Inter',Helvetica] text-gray-600 text-base">
-                      ({salon.reviews} reviews)
+                    <span className="ml-2 text-gray-600 text-base">
+                      {salon.stars.toFixed(1)}
                     </span>
                   </div>
-                  <p className="font-['Inter',Helvetica] text-gray-600 text-base mb-6">
+                  <p className="text-gray-500 text-sm mb-4">
+                    Based on {salon.reviews} review
+                    {salon.reviews !== 1 ? "s" : ""}
+                  </p>
+                  <p className="text-gray-600 text-base mb-6">
                     {salon.description}
                   </p>
                   <Link to={`/service?salon_id=${salon.id}`}>
-                    <Button className="w-full bg-blue-600 text-white font-['Inter',Helvetica] text-base py-3.5">
+                    <Button className="w-full bg-blue-600 text-white text-base py-3.5">
                       Book Appointment
                     </Button>
                   </Link>
@@ -293,8 +336,7 @@ export const Salons = (): JSX.Element => {
         </div>
       </main>
 
-      {/* Footer */}
-     <FooterSection/>
+      <FooterSection />
     </div>
   );
 };

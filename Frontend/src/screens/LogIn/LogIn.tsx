@@ -107,7 +107,7 @@ export const LogIn = (): JSX.Element => {
               navigate(`/admindashboard?admin_id=${user.admin_id}`);
               break;
             case 'staff':
-              navigate(`/admindashboard?admin_id=${user.staff_id}`);
+              navigate(`/staff/dashboard?staff_id=${user.staff_id}`);
               break;
             default:
               navigate('/');

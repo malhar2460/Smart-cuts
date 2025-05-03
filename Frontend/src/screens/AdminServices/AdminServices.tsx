@@ -196,7 +196,7 @@ export const AdminServices = (): JSX.Element => {
 
       <HeaderSection />
         </div>
-      <main className="flex-1 p-8 bg-gray-50">
+      <main className="flex-1 p-8 bg-gray-50 ml-64">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Services</h1>
           <Button onClick={() => setShowAdd((v) => !v)}>

@@ -15,7 +15,9 @@ import { Profile } from "./screens/Profile/Profile";
 import { AdminProfile } from "./screens/AdminProfile/AdminProfile";
 import { Booking } from "./screens/Booking/Booking";
 import { AdminServices } from "./screens/AdminServices/AdminServices";
-
+import { StaffDashboard } from "./screens/StaffDashboard/StaffDashboard";
+import { StaffSchedule } from "./screens/StaffSchedule/StaffSchedule";
+import { StaffProfile } from "./screens/StaffProfile/StaffProfile";
 createRoot(document.getElementById("app") as HTMLElement).render(
   <StrictMode>
     <Router>
@@ -34,6 +36,10 @@ createRoot(document.getElementById("app") as HTMLElement).render(
         <Route path="/profile" element={<Profile />} />
         <Route path="/adminprofile" element={<AdminProfile />} />
         <Route path="/adminservices" element={<AdminServices />} />
+
+      <Route path="/staff/dashboard" element={<StaffDashboard />} />
+      <Route path="/staff/profile" element={<StaffProfile />} />
+      <Route path="/staff/schedule" element={<StaffSchedule />} />
       </Routes>
     </Router>
   </StrictMode>

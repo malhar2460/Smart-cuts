@@ -9,26 +9,26 @@ import {
 
 export const MainContentSection = (): JSX.Element => {
   // Leadership team data
-  const leadershipTeam = [
-    {
-      name: "Michael Anderson",
-      title: "CEO & Founder",
-      description: "15+ years of experience in salon industry innovation.",
-      imageUrl: "..//img.png",
-    },
-    {
-      name: "Sarah Chen",
-      title: "Chief Technology Officer",
-      description: "Former tech lead at major beauty platforms.",
-      imageUrl: "..//img-1.png",
-    },
-    {
-      name: "David Martinez",
-      title: "Chief Operations Officer",
-      description: "Scaling operations across global markets.",
-      imageUrl: "..//img-2.png",
-    },
-  ];
+  // const leadershipTeam = [
+  //   {
+  //     name: "Michael Anderson",
+  //     title: "CEO & Founder",
+  //     description: "15+ years of experience in salon industry innovation.",
+  //     imageUrl: "..//img.png",
+  //   },
+  //   {
+  //     name: "Sarah Chen",
+  //     title: "Chief Technology Officer",
+  //     description: "Former tech lead at major beauty platforms.",
+  //     imageUrl: "..//img-1.png",
+  //   },
+  //   {
+  //     name: "David Martinez",
+  //     title: "Chief Operations Officer",
+  //     description: "Scaling operations across global markets.",
+  //     imageUrl: "..//img-2.png",
+  //   },
+  // ];
 
   // Core values data
   const coreValues = [
@@ -123,11 +123,11 @@ export const MainContentSection = (): JSX.Element => {
 
       {/* Leadership Team Section */}
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 leading-6 mb-6">
+        {/* <h2 className="text-2xl font-bold text-gray-900 leading-6 mb-6">
           Our Leadership Team
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {leadershipTeam.map((leader, index) => (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6"> */}
+          {/* {leadershipTeam.map((leader, index) => (
             <Card
               key={index}
               className="shadow-[0px_1px_2px_#0000000d] rounded-xl overflow-hidden"
@@ -144,8 +144,8 @@ export const MainContentSection = (): JSX.Element => {
                 <p className="text-base text-gray-600">{leader.description}</p>
               </CardContent>
             </Card>
-          ))}
-        </div>
+          ))} */}
+        {/* </div> */}
       </div>
     </section>
   );

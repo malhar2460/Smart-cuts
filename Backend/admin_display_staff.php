@@ -28,12 +28,13 @@ try {
     // 2) Fetch all staff for this salon_id
     $stmt = $conn->prepare(
         "SELECT staff_id,
-                staff_name,
+                username,
+                password,
                 specialization,
                 phone_number,
                 email,
                 availability,
-                image
+                photo
          FROM staff
          WHERE salon_id = :sid"
     );
